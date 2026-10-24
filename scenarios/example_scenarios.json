@@ -1,0 +1,10 @@
+[
+  {"name": "nominal_center", "seed": 101, "part_position": [0.45, 0.0], "expect": "success"},
+  {"name": "edge_left", "seed": 102, "part_position": [0.35, -0.20], "expect": "success"},
+  {"name": "edge_right", "seed": 103, "part_position": [0.35, 0.20], "expect": "success"},
+  {"name": "far_reach", "seed": 104, "part_position": [0.60, 0.0], "expect": "success"},
+  {"name": "near_base", "seed": 105, "part_position": [0.30, 0.05], "expect": "success"},
+  {"name": "perturbed_shift", "seed": 106, "part_position": [0.45, 0.10], "friction_scale": 0.9, "expect": "success"},
+  {"name": "target_zone_b", "seed": 107, "part_position": [0.50, -0.10], "expect": "success"},
+  {"name": "invalid_plan_unknown_part", "seed": 108, "part_position": [0.45, 0.0], "expect": "reject"}
+]
