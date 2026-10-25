@@ -71,7 +71,7 @@ def main() -> int:
     import os
     from pathlib import Path
 
-    env_path = Path(__file__).resolve().parent.parent / ".env"
+    env_path = Path(__file__).resolve().parent.parent.parent / ".env"
     if env_path.exists() and not os.environ.get("META_MODEL_API_KEY"):
         for line in env_path.read_text().splitlines():
             if line.startswith("META_MODEL_API_KEY="):
@@ -85,7 +85,7 @@ def main() -> int:
     # 4. Optional live adapter call
     if live:
         try:
-            sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+            sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
             from simforge.model_adapter import ModelAdapter, ModelConfig
 
             adapter = ModelAdapter(ModelConfig.from_env())
@@ -106,3 +106,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
