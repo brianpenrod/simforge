@@ -1,0 +1,35 @@
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Fetch Menagerie at the pinned commit
+        run: |
+          git clone https://github.com/google-deepmind/mujoco_menagerie.git third_party/mujoco_menagerie
+          git -C third_party/mujoco_menagerie checkout f3b6013629c7b94f8ee93fd977b161fa8350f9bc
+
+      - name: Link the scene assets (Linux equivalent of the Windows junction)
+        run: ln -s "$PWD/third_party/mujoco_menagerie/franka_emika_panda/assets" scene/assets
+
+      - name: Gate 1 check
+        run: python gate1_check.py
+
+      - name: Full test suite
+        run: python -m pytest -q
