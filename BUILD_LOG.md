@@ -38,3 +38,23 @@ Participant Guide's "New work only" rule.
     config; the scene/assets junction is the documented mechanism).
 - Loader refactored: src/simforge/sim/cell.py is the single load path
   (pins enforced); gate1_check.py imports it. All later code uses it too.
+## Oct 27, 2026 - Test skeleton, CI, guard spine (afternoon)
+- pytest suite live (pytest.ini + tests/): 12 plan-validator unit tests,
+  2 negative controls, Gate 1 golden-baseline regression; 19 passed
+  by end of day (incl. guard tests below).
+  - NC-1: a no-op run cannot satisfy the Gate 2 lift criterion.
+  - NC-2: friction measurably changes the physics (0.5 N push: part
+    holds at friction 1.0, slides >5 cm at 0.02).
+- Golden baseline recorded (tests/baselines/gate1_baseline.json) via
+  make_gate1_baseline.py; re-blessing requires founder approval, git
+  diff is the record.
+- CI: .github/workflows/checks.yml runs on every push - clean Linux
+  machine, requirements only, Menagerie at the pinned commit, assets
+  linked per the manifest, gate1_check + full pytest. First run GREEN,
+  including the Windows-recorded baseline reproduced on Linux within
+  1e-6 (observation; the reproducibility claim stays scoped to the
+  build machine per SCENE_SPEC).
+- Guard spine built early per the Oct 27 amendments:
+  src/simforge/guard.py (validate -> approve -> execute -> append-only
+  JSONL audit), 4 contract tests, guard_demo.py driven by hand both
+  ways - approval executed, rejection executed nothing, both audited.
