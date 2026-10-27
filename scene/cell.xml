@@ -1,5 +1,6 @@
 <mujoco model="simforge_cell">
-  <compiler angle="radian" autolimits="true" meshdir="C:/dev/simforge/third_party/mujoco_menagerie/franka_emika_panda/assets" texturedir="C:/dev/simforge/third_party/mujoco_menagerie/franka_emika_panda/assets"/>
+  <compiler angle="radian" autolimits="true"/>
+
   <include file="../third_party/mujoco_menagerie/franka_emika_panda/panda.xml"/>
 
   <visual>

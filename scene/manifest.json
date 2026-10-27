@@ -10,6 +10,10 @@
     "vendored": false,
     "local_clone": "third_party/mujoco_menagerie (gitignored; clone and check out the pinned commit to reproduce)"
   },
+  "assets": [
+    "franka_emika_panda/panda.xml (arm + hand) at the pinned Menagerie commit",
+    "franka_emika_panda/assets/ (meshes and textures) via the scene/assets junction - see setup_notes"
+  ],
   "setup_notes": [
     "Create a junction (Windows) or symlink (POSIX) at scene/assets pointing to third_party/mujoco_menagerie/franka_emika_panda/assets. MuJoCo resolves the included model's meshdir ('assets') relative to the root MJCF folder (scene/), not the included file's folder.",
     "Windows: New-Item -ItemType Junction -Path scene\\assets -Target third_party\\mujoco_menagerie\\franka_emika_panda\\assets"
@@ -20,6 +24,18 @@
     "finger_geom_condim": 4,
     "finger_bodies": ["left_finger", "right_finger"],
     "finger_geoms_set": 16
+  },
+  "effective_config_measured": {
+    "timestep_s": 0.002,
+    "integrator": "implicitfast (3)",
+    "solver_iterations": 100,
+    "solver_tolerance": 1e-08,
+    "cone": "elliptic (1)",
+    "noslip_iterations": 10
+  },
+  "seeds": {
+    "determinism_check": "fixed Panda home keyframe (nkey=1); no perturbation seeds at Gate 1",
+    "gate2_battery": "perturbation seeds are defined with the Gate 2 battery (5 positions x 4 draws)"
   },
   "cell": {
     "robot_base": "origin, on tabletop (z=0)",
@@ -32,9 +48,11 @@
   "gate1_verification": {
     "script": "gate1_check.py",
     "result": "PASS",
+    "evidence_file": "results/gate1/gate1_check_output.txt",
     "nq": 16, "nv": 15, "nu": 8, "ngeom": 85, "nkey": 1,
     "steps": 10000,
     "part_rest_z_m": 0.024892,
+    "determinism_runs": 3,
     "determinism_max_abs_diff": 0.0,
     "determinism_tolerance": 1e-6,
     "verified_on": "Brian's laptop (Windows), 2026-10-27"

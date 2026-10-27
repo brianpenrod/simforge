@@ -25,3 +25,16 @@ Participant Guide's "New work only" rule.
 - gate1_check.py: PASS - model loads (nq=16, nu=8, nkey=1), part rests at
   z=0.024892 m, 10,000 steps, determinism max |diff| = 0.0 across two
   fresh runs (tolerance 1e-6).
+## Oct 27, 2026 - Gate 1 closeout (afternoon)
+- Independent review (Astra) found four gaps vs the ratified Gate 1
+  metrics; all verified against GATE_METRICS.md and fixed:
+  - determinism now runs 3x per the ratified metric (was 2x); diffs 0.0, 0.0.
+  - checker writes evidence to results/gate1/gate1_check_output.txt.
+  - manifest now records the measured timestep (0.002), integrator
+    (implicitfast), solver iterations (100) and tolerance (1e-8), the
+    asset list, and the seed note (fixed home keyframe; no perturbation
+    seeds at Gate 1).
+  - scene/cell.xml: removed machine-specific absolute asset paths (dead
+    config; the scene/assets junction is the documented mechanism).
+- Loader refactored: src/simforge/sim/cell.py is the single load path
+  (pins enforced); gate1_check.py imports it. All later code uses it too.

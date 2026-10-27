@@ -1,0 +1,16 @@
+SimForge Gate 1 check
+MuJoCo version: 3.15.0
+[PASS] version pin 3.15.0 - 3.15.0
+[PASS] model loads - nq=16 nv=15 nu=8 ngeom=85 nkey=1
+[PASS] cone == elliptic
+[PASS] noslip_iterations == 10
+[PASS] finger pad geoms found - 16 geoms set to condim=4
+[PASS] pad condim readback == 4
+effective config: timestep=0.002 integrator=3 solver_iterations=100 solver_tolerance=1e-08 cone=1 noslip_iterations=10
+[PASS] part resting on table after 10k steps - part z = 0.024892 (expect ~0.025)
+[PASS] determinism (3 fresh runs vs run 1) - max |diff| per run: 0.000e+00, 0.000e+00 (tol 1e-06)
+final qpos: [ 5.305305e-18  6.581714e-03 -1.778705e-06 -1.577103e+00 -3.344845e-04
+  1.569649e+00 -7.853000e-01  4.000000e-02  3.999995e-02  4.500000e-01
+  1.334216e-16  2.489224e-02  1.000000e+00  2.743805e-17  1.269620e-17
+ -1.372959e-17]
+GATE 1 CHECK: PASS
