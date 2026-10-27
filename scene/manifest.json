@@ -1,0 +1,42 @@
+{
+  "scene": "scene/cell.xml",
+  "frozen": "2026-10-27",
+  "gate": 1,
+  "mujoco_version": "3.15.0",
+  "menagerie": {
+    "repo": "https://github.com/google-deepmind/mujoco_menagerie.git",
+    "commit": "f3b6013629c7b94f8ee93fd977b161fa8350f9bc",
+    "model": "franka_emika_panda/panda.xml",
+    "vendored": false,
+    "local_clone": "third_party/mujoco_menagerie (gitignored; clone and check out the pinned commit to reproduce)"
+  },
+  "setup_notes": [
+    "Create a junction (Windows) or symlink (POSIX) at scene/assets pointing to third_party/mujoco_menagerie/franka_emika_panda/assets. MuJoCo resolves the included model's meshdir ('assets') relative to the root MJCF folder (scene/), not the included file's folder.",
+    "Windows: New-Item -ItemType Junction -Path scene\\assets -Target third_party\\mujoco_menagerie\\franka_emika_panda\\assets"
+  ],
+  "physics_pins_loader_enforced": {
+    "friction_cone": "elliptic",
+    "noslip_iterations": 10,
+    "finger_geom_condim": 4,
+    "finger_bodies": ["left_finger", "right_finger"],
+    "finger_geoms_set": 16
+  },
+  "cell": {
+    "robot_base": "origin, on tabletop (z=0)",
+    "table_top_z_m": 0.0,
+    "table_extent_m": {"x": [-0.5, 0.7], "y": [-0.4, 0.4]},
+    "part": {"shape": "box 0.05 m cube", "mass_kg": 0.1, "nominal_pos_m": [0.45, 0.0, 0.025]},
+    "target_zone_center_m": [0.45, 0.28],
+    "floor_z_m": -0.75
+  },
+  "gate1_verification": {
+    "script": "gate1_check.py",
+    "result": "PASS",
+    "nq": 16, "nv": 15, "nu": 8, "ngeom": 85, "nkey": 1,
+    "steps": 10000,
+    "part_rest_z_m": 0.024892,
+    "determinism_max_abs_diff": 0.0,
+    "determinism_tolerance": 1e-6,
+    "verified_on": "Brian's laptop (Windows), 2026-10-27"
+  }
+}
