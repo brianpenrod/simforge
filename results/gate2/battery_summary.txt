@@ -1,0 +1,7 @@
+Gate 2 battery: 20/20 successes, score 20 (unlogged failures: 0)
+  P1_center: 4/4
+  P2_near_left: 4/4
+  P3_far_right: 4/4
+  P4_far_left: 4/4
+  P5_near_right: 4/4
+GATE 2 BATTERY: PASS

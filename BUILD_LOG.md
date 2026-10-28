@@ -100,4 +100,15 @@ Participant Guide's "New work only" rule.
   the target zone at (0.444, 0.278), 14.8 s of the 30 s budget, zero
   simulator warnings. Gate 2's remaining criterion is the 20-attempt
   battery (5 positions x 4 perturbation draws), scheduled Oct 29.
+- Gate 2 battery (same day): gate2_battery.py - 20 attempts =
+  5 positions x 4 seeded perturbation draws (position jitter
+  +-10 mm, yaw +-10 deg, friction scale 0.9-1.1 applied to the
+  part, table, and finger-pad surfaces; each draw asserted to
+  have changed simulator state before stepping). Every attempt
+  judged only by the telemetry scorer. RESULT: 20/20 successes,
+  score 20 (bar: >= 18), every position 4/4 (bar: >= 3/4),
+  contiguous holds 4.2-5.7 s against the 2 s criterion, zero
+  unlogged failures. GATE 2 PASSED Oct 28, 2026 - one day ahead
+  of the Oct 29 deadline. Evidence: results/gate2/
+  battery_results.json, results/gate2/battery_summary.txt.
 
