@@ -6,6 +6,10 @@ or the MuJoCo version that alters the physics shows up here as a failure.
 
 Re-blessing the baseline (make_gate1_baseline.py) requires the founder's
 approval; the git diff of the baseline file is the approval record.
+
+Stepping is guarded (Oct 28): if the simulator warns or resets during
+the run, the test fails in the stepper before any comparison happens -
+a baseline "match" produced by a repaired run would be worthless.
 """
 import json
 import pathlib
@@ -14,7 +18,7 @@ import mujoco
 import numpy as np
 import pytest
 
-from simforge.sim.cell import load_cell, reset_home
+from simforge.sim.cell import load_cell, reset_home, step_checked
 
 pytestmark = [pytest.mark.e2e, pytest.mark.regression]
 
@@ -31,8 +35,7 @@ def test_gate1_baseline_unchanged():
 
     model, data, _ = load_cell()
     reset_home(model, data)
-    for _ in range(baseline["steps"]):
-        mujoco.mj_step(model, data)
+    step_checked(model, data, baseline["steps"])
 
     qpos_diff = float(np.max(np.abs(data.qpos - np.array(baseline["final_qpos"]))))
     qvel_diff = float(np.max(np.abs(data.qvel - np.array(baseline["final_qvel"]))))

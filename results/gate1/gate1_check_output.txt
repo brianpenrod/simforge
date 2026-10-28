@@ -1,10 +1,11 @@
 SimForge Gate 1 check
 MuJoCo version: 3.15.0
 [PASS] version pin 3.15.0 - 3.15.0
+[PASS] clean stepping over 10k steps - warnings=0 resets=0 elapsed=20.000s
 [PASS] model loads - nq=16 nv=15 nu=8 ngeom=85 nkey=1
 [PASS] cone == elliptic
 [PASS] noslip_iterations == 10
-[PASS] finger pad geoms found - 16 geoms set to condim=4
+[PASS] finger pad geoms == 16 (frozen scene) - 16 geoms
 [PASS] pad condim readback == 4
 effective config: timestep=0.002 integrator=3 solver_iterations=100 solver_tolerance=1e-08 cone=1 noslip_iterations=10
 [PASS] part resting on table after 10k steps - part z = 0.024892 (expect ~0.025)
