@@ -58,3 +58,46 @@ Participant Guide's "New work only" rule.
   src/simforge/guard.py (validate -> approve -> execute -> append-only
   JSONL audit), 4 contract tests, guard_demo.py driven by hand both
   ways - approval executed, rejection executed nothing, both audited.
+## Oct 28, 2026 - Gate 2 day 1: measurement hardening, metrics amendments, telemetry scorer, first grasp
+- Task 0 (red-cell fixes from the Oct 27 Astra review #2):
+  src/simforge/sim/cell.py is now loader + guarded stepper.
+  step_checked raises on MuJoCo warnings, auto-resets (time going
+  backwards), lost sim time, or nonfinite state - the NaN fault
+  injection that passed the old checker is now a failing pytest
+  (tests/test_step_guard.py). Loader hard-fails on a missing finger
+  body or a pad-geom count != 16 (was: silent skip). NC-2 displacement
+  bounds are absolute. gate1_check reports clean stepping explicitly
+  (warnings=0 resets=0 elapsed=20.000s); all Gate 1 numbers unchanged.
+  Suite: 22 passed; CI green.
+- Task 1: the Oct 27-28 amendments are committed into GATE_METRICS.md
+  itself (they previously lived only in the runbook/handoff - the
+  drift Astra flagged): full-cycle Gate 2 (lift -> transfer ->
+  release) with placement acceptance, contiguous-window hold, hand-
+  body measurement frame, unlogged-failure double-count arithmetic,
+  telemetry-only scoring, guarded stepping, approval binding
+  (implementation scheduled Oct 30, graded at Gate 5).
+- Task 2: telemetry scorer (src/simforge/scoring.py) built BEFORE the
+  controller, per the standing rule that success is measured from
+  simulator telemetry by a scorer the controller cannot influence.
+  evaluate_attempt is a pure function of the trace: contiguous >= 2 s
+  hold window (lift >= 5 cm, tracking <= 2 cm vs the hand body, zero
+  table contact, grip force > 0 at every sample), transfer = held
+  part center inside the target-zone bounds, release = part resting
+  in the zone >= 1 s after the grip ends. Failure causes per phase
+  (miss/slip/drop/transfer/release; the runner owns "timeout").
+  7 synthetic-trace unit tests + the NC-1 closure: the production
+  scorer fed real telemetry from a no-op run of the actual cell
+  rejects it as a miss. One API bug found by that e2e test and fixed
+  (data.ncon, not data.ncontact). Suite: 30 passed; CI green.
+- Task 3: grasp controller (src/simforge/grasp.py) - mink IK (daqp
+  solver; quadprog not installed) waypoint execution driven by the
+  plan's own fields; grasp height measured from the finger-pad span
+  at the home keyframe (drop_center 0.092 m), gripper semantics
+  measured by probe_model.py (ctrl 255 = open, 0 = closed).
+  FIRST INSTRUMENTED ATTEMPT: full cycle SUCCESS under the telemetry
+  scorer - rise 0.145 m, contiguous hold 4.68 s, hold grip force min
+  2.46 N, max tracking offset 2.9 mm, part released resting inside
+  the target zone at (0.444, 0.278), 14.8 s of the 30 s budget, zero
+  simulator warnings. Gate 2's remaining criterion is the 20-attempt
+  battery (5 positions x 4 perturbation draws), scheduled Oct 29.
+
