@@ -176,6 +176,7 @@ def evaluate_attempt(samples, rest_z: float, zone: dict) -> dict:
     # --- release: gripper lets go; part rests in the zone >= RELEASE_REST_S.
     def rest_sample_ok(s) -> bool:
         return (s["grip_force_n"] <= CONTACT_EPS_N
+                and s["table_contact"]
                 and abs(s["part"][2] - rest_z) <= REST_BAND_M
                 and _in_zone(s["part"], zone))
 
@@ -203,3 +204,4 @@ def evaluate_attempt(samples, rest_z: float, zone: dict) -> dict:
 
     result["success"] = True
     return result
+
