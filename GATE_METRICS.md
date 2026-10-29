@@ -14,7 +14,7 @@ Principles: every metric is measurable inside the sim (no eyeballing), every pas
 
 \- Success is measured ONLY from simulator telemetry, by a scorer independent of the controller that produced the motion. Controller- or model-reported success is never evidence.
 
-\- All stepping in checks, tests, the battery, and the evaluator goes through the guarded stepper (`step\_checked`): a run in which MuJoCo warned, auto-reset, lost sim time, or produced nonfinite state is a FAILED run, whatever else it shows.
+\- All stepping in checks, tests, the battery, and the evaluator goes through the guarded stepper (`step\\\_checked`): a run in which MuJoCo warned, auto-reset, lost sim time, or produced nonfinite state is a FAILED run, whatever else it shows.
 
 \- Approval binds to the exact validated plan: the guard re-validates the plan against FRESH scene state immediately before execution, so a plan or scene that changed after approval cannot execute. (Implementation scheduled with the Gate 3 work, Oct 30; graded at Gate 5.)
 
@@ -118,13 +118,13 @@ Pass requires ALL:
 
 Pass requires ALL:
 
-\- All model calls flow through `model\_adapter.py` — \*\*zero direct API calls elsewhere in the codebase\*\* (checkable by search).
+\- All model calls flow through `model\\\_adapter.py` — \*\*zero direct API calls elsewhere in the codebase\*\* (checkable by search).
 
 \- \*\*Schema conformance:\*\* in a 10-call sample, \*\*≥9\*\* return a plan that parses against the plan schema with no repair/retry hack.
 
 \- \*\*Safety gate:\*\* 100% of plans pass schema + bounds validation before execution; invalid model output is rejected and logged, never executed (reuse the Gate 3 invalid-plan case, now model-generated).
 
-\- \*\*Semantic validation (added Oct 24, Red Cell):\*\* schema-validity is syntax, not sense. Before execution every plan must also pass semantic checks against live scene state (part exists, target inside workspace bounds, grasp Z above table surface — implemented in `plan\_schema.validate\_semantics`). The Gate 4 sample must include \*\*≥1 trap case\*\*: a scene state designed to induce a hallucinated part, whose plan the system must reject.
+\- \*\*Semantic validation (added Oct 24, Red Cell):\*\* schema-validity is syntax, not sense. Before execution every plan must also pass semantic checks against live scene state (part exists, target inside workspace bounds, grasp Z above table surface — implemented in `plan\\\_schema.validate\\\_semantics`). The Gate 4 sample must include \*\*≥1 trap case\*\*: a scene state designed to induce a hallucinated part, whose plan the system must reject.
 
 \- \*\*Plan causality (added Oct 27):\*\* two different valid plans must produce two measurably different executions, and a rejected plan must produce no execution — proving the model's output, not a fixed script, drives the motion.
 
@@ -163,6 +163,42 @@ Pass requires ALL:
 \- Gate 3 suite size: 8 scenarios (proposed) vs 6 if Gate 2 runs long.
 
 \- Gate 4 latency soft target: 15 s p95 (proposed).
+
+
+
+\## Gate outcome annotations (added Oct 29, 2026)
+
+
+
+Amendment ratified Oct 28 (Astra review #3 proposal, adopted by Brian):
+
+Gate 3 pass = ALL 8 scenario expectations met in run 1 AND fresh-draw
+
+rerun agreement >= 7/8, with every flip explained.
+
+
+
+GATE 2: PASSED Oct 28 (commit c8846b6) - battery 20/20, every position
+
+4/4. Reconfirmed Oct 29 under the hardened scorer (release requires
+
+table contact) with the v2 runner: run 20261029T150804, 20/20, score
+
+20, unlogged failures 0. Evidence: results/gate2/.
+
+
+
+GATE 3: PASSED Oct 29 - run 1: 8/8 expectations met (7 success,
+
+1 rejected), wall-clock 17.2 s (bound 1200 s); fresh-draw rerun
+
+(+1000 seed offset): 8/8 met; agreement 8/8, zero flips. Judged only
+
+by the telemetry scorer; the rejection was validation-only with the
+
+executor never invoked. Evidence: results/gate3/ (suite\_run1.json,
+
+suite\_run2.json, agreement.json, gate3\_summary.txt).
 
 
 

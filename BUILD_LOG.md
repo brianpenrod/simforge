@@ -112,3 +112,24 @@ Participant Guide's "New work only" rule.
   of the Oct 29 deadline. Evidence: results/gate2/
   battery_results.json, results/gate2/battery_summary.txt.
 
+## Oct 29 - Gate 3 PASSED (a day ahead of the Oct 30 plan)
+
+- Evaluator rebuilt on the telemetry scorer: verdicts only from
+  evaluate_attempt; rejections only via plan validation, executor
+  structurally never called (34347ce). Scenarios v2: every case carries
+  an explicit plan; perturbed_shift applies a real +30/-20 mm post-setup
+  shift; plan_variation replaces target_zone_b (no second zone exists);
+  invalid_plan_unknown_part plans part_ghost (4e1fcdd). Suite 39 tests.
+- Hypothesis adopted as a supplement (Astra): three properties over the
+  scorer and validators. Forced @example cases (z=nan, z=inf) caught
+  validate_semantics waving non-finite part positions through; fixed
+  with an explicit finiteness check (e34fb57).
+- Battery v2 (Astra #3 fixes): setup failures logged as rows, stale-PASS
+  rotation, perturbation magnitude asserted; Gate 1 baseline regenerated
+  through the guarded stepper, byte-identical. Battery rerun under the
+  fixed scorer: 20/20 (a3e1fd0).
+- Gate 3 run: run 1 8/8 expectations met, wall-clock 17.2 s of the
+  1200 s bound; fresh-draw rerun 8/8; agreement 8/8, zero flips.
+  GATE 3 PASS per the Oct 28 ratified amendment. Evidence results/gate3/.
+
+
