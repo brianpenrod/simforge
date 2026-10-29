@@ -202,3 +202,127 @@ suite\_run2.json, agreement.json, gate3\_summary.txt).
 
 
 
+\## Clarification ratified Oct 29, 2026 - Astra red-cell review #4
+
+
+
+Brian ratified the clarification below AS-IS on Oct 29, 2026 (the full
+
+path): the text is adopted unchanged, and Gate 3 target variation will
+
+be DEMONSTRATED with a relocated-target scenario (Oct 30), not waived.
+
+
+
+Gate 3 keeps the existing required scenario coverage, including an actual
+
+changed target destination. Replacing target variation with speed/height
+
+variation requires a separate explicit coverage amendment. The verdict must
+
+check the approved eight unique scenario identities and coverage, all eight
+
+run-1 expectations, wall time <=1200 s, fresh simulator perturbations,
+
+agreement >=7/8, and a recorded explanation for every flip. Manifest or setup
+
+errors fail visibly under a new run ID and cannot leave a previous PASS
+
+presented as the current attempted run's result.
+
+
+
+Gate 4 conformance is scored on ten prefiled requests and the first unmodified
+
+response to each. Exactly four keys are allowed. Motion values must be finite
+
+JSON numbers, excluding booleans, within the declared ranges; coercion,
+
+extra-key dropping, duplicate-key acceptance, extraction/repair and retries
+
+do not turn a failed response into a schema-conforming first response.
+
+Failures, refusals, empty and truncated responses remain in the denominator.
+
+Schema validity, semantics, task correctness and execution are separate fields.
+
+
+
+Every executed plan, including evaluator cases, uses the same application
+
+admission boundary. Test expectations cannot choose whether validation runs.
+
+Validate live simulator-derived references and scene bounds; bind the exact
+
+validated plan and relevant scene/configuration revision to approval. A changed
+
+but still valid scene invalidates the previous approval. The executed part and
+
+target must resolve to those approved identities. Unsupported references,
+
+malformed plans and failures before admission produce zero executor invocations
+
+and zero controller motion steps, plus a terminal phase-specific audit result.
+
+Execution faults stop further motion and terminate as execution\_failed.
+
+
+
+A counted hallucination trap is a schema-valid unsupported reference rejected
+
+by the semantic validator, not a timeout, scene-load error, parser failure or
+
+model refusal. Keep a deterministic injected guard trap and live-model trap
+
+results distinct. The existing requirement for at least one model-generated
+
+hallucination caught remains unless separately amended.
+
+
+
+Plan causality holds the starting scene and perturbation draw fixed, repeats
+
+an identical plan as a control, and changes one supported field at a time.
+
+Measure the field's specified effect: approach/lift height, motion timing,
+
+target destination, or correct part selection. In the single-part scope,
+
+unsupported part IDs must reject. Every tested live response is correlated to
+
+the exact parsed, validated, approved and executed plan.
+
+
+
+Record raw first response, response/attempt ID, configured and reported model,
+
+finish/refusal status, endpoint, live/mock status, parse/schema/semantic result,
+
+approval identity, executor count and telemetry verdict under one call/run ID.
+
+Explicitly set low reasoning effort and a finite request deadline; disable
+
+retries for the conformance sample or count every attempt and still grade the
+
+first response. Record monotonic end-to-end elapsed time for all attempts,
+
+including failures and retry waits; report median/max and timeout counts. The
+
+15 s maximum remains a soft limitation threshold.
+
+
+
+The endpoint-swap test changes only resolved configuration and uses the same
+
+production adapter, parser, validator and orchestration against a local
+
+OpenAI-compatible HTTP stub. Verify request receipt and valid, malformed,
+
+empty/refused, truncated, timeout and non-2xx behavior. Instantiating a separate
+
+canned MockAdapter alone is not endpoint-swap evidence.
+
+
+
+
+
