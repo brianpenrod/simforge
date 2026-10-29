@@ -6,9 +6,15 @@ Validation has two layers, both required before execution:
   - semantics: the plan must make sense against the actual scene state
     (Red Cell amendment: a schema-valid plan can still command a grasp at
     empty coordinates or through the table; syntax alone proves nothing).
+
+Oct 29 (Hypothesis property, Astra review #3 follow-through):
+validate_semantics rejects non-finite part coordinates. NaN comparisons
+are False, so the workspace and below-table checks alone waved a NaN
+position through; finiteness is now checked explicitly, first.
 """
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 
 
@@ -56,6 +62,8 @@ def validate_semantics(plan: Plan, scene_state: dict) -> None:
     if plan.target_zone not in zones:
         raise ValueError(f"unknown target zone: {plan.target_zone}")
     x, y, z = parts[plan.part_id]["position"]
+    if not all(math.isfinite(v) for v in (x, y, z)):
+        raise ValueError("part position is not finite")
     ws = scene_state["workspace"]
     if not (ws["min"][0] <= x <= ws["max"][0] and ws["min"][1] <= y <= ws["max"][1]):
         raise ValueError("part position outside workspace bounds")
