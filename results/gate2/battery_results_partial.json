@@ -1,0 +1,547 @@
+{
+  "run_id": "20261029T150804",
+  "complete": false,
+  "completed": 20,
+  "results": [
+    {
+      "position": "P1_center",
+      "seed": 101,
+      "success": true,
+      "failure_cause": null,
+      "perturbed": {
+        "part_position": [
+          0.4516,
+          -0.0061
+        ],
+        "yaw_deg": 9.31,
+        "friction_scale": 1.0848
+      },
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14591665028831485,
+      "longest_hold_s": 4.732000000001032,
+      "hold_min_grip_force_n": 2.4530478545085526,
+      "hold_max_offset_m": 0.0031986393444165683,
+      "duration_s": 14.80200000000178,
+      "final_part_pos": [
+        0.44435310775943687,
+        0.2760088271019866,
+        0.024892244581686197
+      ]
+    },
+    {
+      "position": "P1_center",
+      "seed": 202,
+      "success": true,
+      "failure_cause": null,
+      "perturbed": {
+        "part_position": [
+          0.4553,
+          0.0029
+        ],
+        "yaw_deg": -1.81,
+        "friction_scale": 0.9396
+      },
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14561310878448785,
+      "longest_hold_s": 4.674000000001013,
+      "hold_min_grip_force_n": 2.453587469847989,
+      "hold_max_offset_m": 0.002863087035032869,
+      "duration_s": 14.74600000000176,
+      "final_part_pos": [
+        0.44418748321371204,
+        0.2784233210713774,
+        0.02489224458159074
+      ]
+    },
+    {
+      "position": "P1_center",
+      "seed": 303,
+      "success": true,
+      "failure_cause": null,
+      "perturbed": {
+        "part_position": [
+          0.4406,
+          0.0094
+        ],
+        "yaw_deg": -6.1,
+        "friction_scale": 1.0989
+      },
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.1446175444245549,
+      "longest_hold_s": 4.614000000001011,
+      "hold_min_grip_force_n": 2.4703254770933873,
+      "hold_max_offset_m": 0.003196415707538996,
+      "duration_s": 14.732000000001756,
+      "final_part_pos": [
+        0.4444623991957226,
+        0.2791968037831285,
+        0.02489224458169363
+      ]
+    },
+    {
+      "position": "P1_center",
+      "seed": 404,
+      "success": true,
+      "failure_cause": null,
+      "perturbed": {
+        "part_position": [
+          0.4417,
+          -0.0019
+        ],
+        "yaw_deg": -9.93,
+        "friction_scale": 0.9187
+      },
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14593951513367553,
+      "longest_hold_s": 4.712000000001031,
+      "hold_min_grip_force_n": 2.4726467372995766,
+      "hold_max_offset_m": 0.0032996239142411427,
+      "duration_s": 14.794000000001777,
+      "final_part_pos": [
+        0.44457388654382096,
+        0.27968087595955415,
+        0.024892244581653573
+      ]
+    },
+    {
+      "position": "P2_near_left",
+      "seed": 101,
+      "success": true,
+      "failure_cause": null,
+      "perturbed": {
+        "part_position": [
+          0.3516,
+          -0.1561
+        ],
+        "yaw_deg": 9.31,
+        "friction_scale": 1.0848
+      },
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14661722014443931,
+      "longest_hold_s": 5.6640000000014945,
+      "hold_min_grip_force_n": 2.4570982498389444,
+      "hold_max_offset_m": 0.0064325014837081735,
+      "duration_s": 16.07600000000169,
+      "final_part_pos": [
+        0.4452549336751303,
+        0.2719148337981894,
+        0.024892244581650857
+      ]
+    },
+    {
+      "position": "P2_near_left",
+      "seed": 202,
+      "success": true,
+      "failure_cause": null,
+      "perturbed": {
+        "part_position": [
+          0.3553,
+          -0.1471
+        ],
+        "yaw_deg": -1.81,
+        "friction_scale": 0.9396
+      },
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14639055890783376,
+      "longest_hold_s": 5.604000000001465,
+      "hold_min_grip_force_n": 2.4586823582449133,
+      "hold_max_offset_m": 0.004932481396142209,
+      "duration_s": 15.996000000001734,
+      "final_part_pos": [
+        0.44430817194285505,
+        0.2744844920288951,
+        0.024892244581584802
+      ]
+    },
+    {
+      "position": "P2_near_left",
+      "seed": 303,
+      "success": true,
+      "failure_cause": null,
+      "perturbed": {
+        "part_position": [
+          0.3406,
+          -0.1406
+        ],
+        "yaw_deg": -6.1,
+        "friction_scale": 1.0989
+      },
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14714347463794525,
+      "longest_hold_s": 5.61000000000147,
+      "hold_min_grip_force_n": 2.449154836738393,
+      "hold_max_offset_m": 0.004553268980102511,
+      "duration_s": 16.00600000000173,
+      "final_part_pos": [
+        0.4439532308594405,
+        0.27509812415881985,
+        0.02489224458169537
+      ]
+    },
+    {
+      "position": "P2_near_left",
+      "seed": 404,
+      "success": true,
+      "failure_cause": null,
+      "perturbed": {
+        "part_position": [
+          0.3417,
+          -0.1519
+        ],
+        "yaw_deg": -9.93,
+        "friction_scale": 0.9187
+      },
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14614282324418332,
+      "longest_hold_s": 5.646000000001498,
+      "hold_min_grip_force_n": 2.4565107465924862,
+      "hold_max_offset_m": 0.004149139018520894,
+      "duration_s": 16.08200000000169,
+      "final_part_pos": [
+        0.4440158497484575,
+        0.27595485830099287,
+        0.02489224458166281
+      ]
+    },
+    {
+      "position": "P3_far_right",
+      "seed": 101,
+      "success": true,
+      "failure_cause": null,
+      "perturbed": {
+        "part_position": [
+          0.5516,
+          0.1439
+        ],
+        "yaw_deg": 9.31,
+        "friction_scale": 1.0848
+      },
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14424489275584879,
+      "longest_hold_s": 4.240000000000922,
+      "hold_min_grip_force_n": 2.455560240881468,
+      "hold_max_offset_m": 0.003361848390506224,
+      "duration_s": 14.434000000001657,
+      "final_part_pos": [
+        0.44394037051284896,
+        0.27897731578665724,
+        0.024892244581685662
+      ]
+    },
+    {
+      "position": "P3_far_right",
+      "seed": 202,
+      "success": true,
+      "failure_cause": null,
+      "perturbed": {
+        "part_position": [
+          0.5553,
+          0.1529
+        ],
+        "yaw_deg": -1.81,
+        "friction_scale": 0.9396
+      },
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.1438786947289889,
+      "longest_hold_s": 4.228000000000931,
+      "hold_min_grip_force_n": 2.4535889387877354,
+      "hold_max_offset_m": 0.0044467156009305635,
+      "duration_s": 14.452000000001663,
+      "final_part_pos": [
+        0.4443844637520683,
+        0.281057983732768,
+        0.024892244581701882
+      ]
+    },
+    {
+      "position": "P3_far_right",
+      "seed": 303,
+      "success": true,
+      "failure_cause": null,
+      "perturbed": {
+        "part_position": [
+          0.5406,
+          0.1594
+        ],
+        "yaw_deg": -6.1,
+        "friction_scale": 1.0989
+      },
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14425110644879074,
+      "longest_hold_s": 4.244000000000936,
+      "hold_min_grip_force_n": 2.4561002900056135,
+      "hold_max_offset_m": 0.004742692056903463,
+      "duration_s": 14.466000000001667,
+      "final_part_pos": [
+        0.4447528963466089,
+        0.2814538276329382,
+        0.02489224458165231
+      ]
+    },
+    {
+      "position": "P3_far_right",
+      "seed": 404,
+      "success": true,
+      "failure_cause": null,
+      "perturbed": {
+        "part_position": [
+          0.5417,
+          0.1481
+        ],
+        "yaw_deg": -9.93,
+        "friction_scale": 0.9187
+      },
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14333778325370258,
+      "longest_hold_s": 4.222000000000927,
+      "hold_min_grip_force_n": 2.4579653586667964,
+      "hold_max_offset_m": 0.00498946438620171,
+      "duration_s": 14.44400000000166,
+      "final_part_pos": [
+        0.44531734133546325,
+        0.2819085481208617,
+        0.024892244581659864
+      ]
+    },
+    {
+      "position": "P4_far_left",
+      "seed": 101,
+      "success": true,
+      "failure_cause": null,
+      "perturbed": {
+        "part_position": [
+          0.3016,
+          0.1939
+        ],
+        "yaw_deg": 9.31,
+        "friction_scale": 1.0848
+      },
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14691084331516718,
+      "longest_hold_s": 4.326000000001134,
+      "hold_min_grip_force_n": 2.429888567441454,
+      "hold_max_offset_m": 0.004926006398647301,
+      "duration_s": 14.930000000001822,
+      "final_part_pos": [
+        0.4435227040291476,
+        0.2813218592055951,
+        0.024892244581607496
+      ]
+    },
+    {
+      "position": "P4_far_left",
+      "seed": 202,
+      "success": true,
+      "failure_cause": null,
+      "perturbed": {
+        "part_position": [
+          0.3053,
+          0.2029
+        ],
+        "yaw_deg": -1.81,
+        "friction_scale": 0.9396
+      },
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14597843340894645,
+      "longest_hold_s": 4.300000000001139,
+      "hold_min_grip_force_n": 2.4547359167403338,
+      "hold_max_offset_m": 0.006267513658554651,
+      "duration_s": 14.940000000001826,
+      "final_part_pos": [
+        0.4443026985232352,
+        0.28343058030174906,
+        0.024892244581647627
+      ]
+    },
+    {
+      "position": "P4_far_left",
+      "seed": 303,
+      "success": true,
+      "failure_cause": null,
+      "perturbed": {
+        "part_position": [
+          0.2906,
+          0.2094
+        ],
+        "yaw_deg": -6.1,
+        "friction_scale": 1.0989
+      },
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14694431524982965,
+      "longest_hold_s": 4.320000000001164,
+      "hold_min_grip_force_n": 2.44010501780859,
+      "hold_max_offset_m": 0.007034845469065862,
+      "duration_s": 14.996000000001844,
+      "final_part_pos": [
+        0.44499391658228143,
+        0.28425360035551006,
+        0.024892244581651287
+      ]
+    },
+    {
+      "position": "P4_far_left",
+      "seed": 404,
+      "success": true,
+      "failure_cause": null,
+      "perturbed": {
+        "part_position": [
+          0.2917,
+          0.1981
+        ],
+        "yaw_deg": -9.93,
+        "friction_scale": 0.9187
+      },
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.1467280987789028,
+      "longest_hold_s": 4.316000000001152,
+      "hold_min_grip_force_n": 2.456161697472859,
+      "hold_max_offset_m": 0.007404256437101636,
+      "duration_s": 14.968000000001835,
+      "final_part_pos": [
+        0.4455404057508316,
+        0.28471067805834827,
+        0.02489224458163238
+      ]
+    },
+    {
+      "position": "P5_near_right",
+      "seed": 101,
+      "success": true,
+      "failure_cause": null,
+      "perturbed": {
+        "part_position": [
+          0.6016,
+          -0.1061
+        ],
+        "yaw_deg": 9.31,
+        "friction_scale": 1.0848
+      },
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14396521409929497,
+      "longest_hold_s": 5.380000000001293,
+      "hold_min_grip_force_n": 2.4536397372982117,
+      "hold_max_offset_m": 0.0034473414986396765,
+      "duration_s": 15.55400000000198,
+      "final_part_pos": [
+        0.4445490307329048,
+        0.27592950954812256,
+        0.02489224458167934
+      ]
+    },
+    {
+      "position": "P5_near_right",
+      "seed": 202,
+      "success": true,
+      "failure_cause": null,
+      "perturbed": {
+        "part_position": [
+          0.6053,
+          -0.0971
+        ],
+        "yaw_deg": -1.81,
+        "friction_scale": 0.9396
+      },
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14410314937009205,
+      "longest_hold_s": 5.342000000001275,
+      "hold_min_grip_force_n": 2.4558108516541193,
+      "hold_max_offset_m": 0.0030999686705908136,
+      "duration_s": 15.504000000002007,
+      "final_part_pos": [
+        0.44410705813561385,
+        0.2779900820880077,
+        0.024892244581584535
+      ]
+    },
+    {
+      "position": "P5_near_right",
+      "seed": 303,
+      "success": true,
+      "failure_cause": null,
+      "perturbed": {
+        "part_position": [
+          0.5906,
+          -0.0906
+        ],
+        "yaw_deg": -6.1,
+        "friction_scale": 1.0989
+      },
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14421841192929336,
+      "longest_hold_s": 5.290000000001245,
+      "hold_min_grip_force_n": 2.452655344183937,
+      "hold_max_offset_m": 0.0030205197847551295,
+      "duration_s": 15.422000000001987,
+      "final_part_pos": [
+        0.4442760613580445,
+        0.2788976543569109,
+        0.024892244581583754
+      ]
+    },
+    {
+      "position": "P5_near_right",
+      "seed": 404,
+      "success": true,
+      "failure_cause": null,
+      "perturbed": {
+        "part_position": [
+          0.5917,
+          -0.1019
+        ],
+        "yaw_deg": -9.93,
+        "friction_scale": 0.9187
+      },
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14416818454370808,
+      "longest_hold_s": 5.348000000001273,
+      "hold_min_grip_force_n": 2.4521144122703946,
+      "hold_max_offset_m": 0.0033066532929792963,
+      "duration_s": 15.500000000002009,
+      "final_part_pos": [
+        0.44457531974143083,
+        0.2795497598633992,
+        0.024892244581609862
+      ]
+    }
+  ]
+}

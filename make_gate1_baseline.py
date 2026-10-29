@@ -3,6 +3,10 @@
 Runs the frozen cell exactly as gate1_check.py does (shared loader, home
 keyframe, 10,000 steps) and records the final state.
 
+Stepping goes through the GUARDED stepper (step_checked): a simulator
+fault during baseline generation must fail loudly here, never bake a
+corrupt baseline silently. (Astra review #3, Oct 28.)
+
 WARNING: running this RE-BLESSES the baseline. Do it only with the
 founder's approval, and review the change with `git diff` before
 committing - the diff IS the approval record.
@@ -18,7 +22,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 import mujoco
 
-from simforge.sim.cell import load_cell, reset_home
+from simforge.sim.cell import load_cell, reset_home, step_checked
 
 STEPS = 10_000
 OUT = ROOT / "tests" / "baselines" / "gate1_baseline.json"
@@ -27,8 +31,7 @@ OUT = ROOT / "tests" / "baselines" / "gate1_baseline.json"
 def main():
     model, data, _ = load_cell()
     reset_home(model, data)
-    for _ in range(STEPS):
-        mujoco.mj_step(model, data)
+    step_checked(model, data, STEPS)
     part_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, "part")
     baseline = {
         "mujoco_version": mujoco.__version__,
@@ -46,3 +49,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
