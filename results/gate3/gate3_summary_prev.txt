@@ -1,0 +1,3 @@
+Gate 3 run 1: 8/8 expectations met (all met: True), wall-clock 17.2 s
+Fresh-draw agreement: 8/8
+GATE 3: PASS

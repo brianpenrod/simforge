@@ -1,0 +1,76 @@
+{
+  "total": 2,
+  "expectations_met": 2,
+  "all_expectations_met": true,
+  "wall_s": 5.299,
+  "results": [
+    {
+      "scenario": "target_filed",
+      "seed": 401,
+      "expect": "success",
+      "executor_called": true,
+      "perturbed": {
+        "part_position": [
+          0.45,
+          -0.0014
+        ],
+        "yaw_deg": 6.48,
+        "friction_scale": 1.0589
+      },
+      "success": true,
+      "failure_cause": null,
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14546826785820344,
+      "longest_hold_s": 4.696000000001025,
+      "hold_min_grip_force_n": 2.455800429938836,
+      "hold_max_offset_m": 0.0029350637890742043,
+      "duration_s": 14.778000000001771,
+      "final_part_pos": [
+        0.44423498983777304,
+        0.2770559913774273,
+        0.024892244581699065
+      ],
+      "passed": true,
+      "outcome_class": "success",
+      "wall_s": 2.587
+    },
+    {
+      "scenario": "target_relocated",
+      "seed": 401,
+      "expect": "success",
+      "executor_called": true,
+      "perturbed": {
+        "part_position": [
+          0.45,
+          -0.0014
+        ],
+        "yaw_deg": 6.48,
+        "friction_scale": 1.0589
+      },
+      "target_zone_pos": [
+        0.15,
+        -0.25
+      ],
+      "success": true,
+      "failure_cause": null,
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14890497770506245,
+      "longest_hold_s": 5.37200000000125,
+      "hold_min_grip_force_n": 1.420967819951552,
+      "hold_max_offset_m": 0.007454090564991059,
+      "duration_s": 15.396000000001978,
+      "final_part_pos": [
+        0.14787542058163233,
+        -0.25903125645865976,
+        0.024892244581620995
+      ],
+      "passed": true,
+      "outcome_class": "success",
+      "wall_s": 2.712
+    }
+  ]
+}

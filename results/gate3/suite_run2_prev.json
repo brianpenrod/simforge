@@ -1,0 +1,253 @@
+{
+  "total": 8,
+  "expectations_met": 8,
+  "all_expectations_met": true,
+  "wall_s": 17.133,
+  "results": [
+    {
+      "scenario": "nominal_center",
+      "seed": 1101,
+      "expect": "success",
+      "executor_called": true,
+      "perturbed": {
+        "part_position": [
+          0.4472,
+          0.01
+        ],
+        "yaw_deg": -2.73,
+        "friction_scale": 0.9351
+      },
+      "success": true,
+      "failure_cause": null,
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14541030998356289,
+      "longest_hold_s": 4.630000000001004,
+      "hold_min_grip_force_n": 2.4528555684924616,
+      "hold_max_offset_m": 0.0030549618108108943,
+      "duration_s": 14.718000000001751,
+      "final_part_pos": [
+        0.44427251989543964,
+        0.2787153127821486,
+        0.024892244581687064
+      ],
+      "passed": true,
+      "outcome_class": "success",
+      "wall_s": 2.456
+    },
+    {
+      "scenario": "edge_left",
+      "seed": 1102,
+      "expect": "success",
+      "executor_called": true,
+      "perturbed": {
+        "part_position": [
+          0.3546,
+          -0.2074
+        ],
+        "yaw_deg": 3.79,
+        "friction_scale": 1.0778
+      },
+      "success": true,
+      "failure_cause": null,
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14662837868664058,
+      "longest_hold_s": 5.942000000001635,
+      "hold_min_grip_force_n": 2.4567960575410415,
+      "hold_max_offset_m": 0.005862754283498883,
+      "duration_s": 16.462000000001478,
+      "final_part_pos": [
+        0.44458067279187247,
+        0.27284592279328057,
+        0.024892244581697066
+      ],
+      "passed": true,
+      "outcome_class": "success",
+      "wall_s": 2.655
+    },
+    {
+      "scenario": "edge_right",
+      "seed": 1103,
+      "expect": "success",
+      "executor_called": true,
+      "perturbed": {
+        "part_position": [
+          0.348,
+          0.1995
+        ],
+        "yaw_deg": -0.63,
+        "friction_scale": 1.0922
+      },
+      "success": true,
+      "failure_cause": null,
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14648924378056458,
+      "longest_hold_s": 4.310000000001087,
+      "hold_min_grip_force_n": 2.4556366101512515,
+      "hold_max_offset_m": 0.005550876379063265,
+      "duration_s": 14.820000000001786,
+      "final_part_pos": [
+        0.44434337905021953,
+        0.2824412241466908,
+        0.024892244581665158
+      ],
+      "passed": true,
+      "outcome_class": "success",
+      "wall_s": 2.34
+    },
+    {
+      "scenario": "far_reach",
+      "seed": 1104,
+      "expect": "success",
+      "executor_called": true,
+      "perturbed": {
+        "part_position": [
+          0.5951,
+          0.0089
+        ],
+        "yaw_deg": -7.91,
+        "friction_scale": 1.0652
+      },
+      "success": true,
+      "failure_cause": null,
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14356546194769515,
+      "longest_hold_s": 4.770000000001051,
+      "hold_min_grip_force_n": 2.451399956513015,
+      "hold_max_offset_m": 0.00410581477599898,
+      "duration_s": 14.860000000001799,
+      "final_part_pos": [
+        0.4449364954690621,
+        0.2804043572242672,
+        0.024892244581674144
+      ],
+      "passed": true,
+      "outcome_class": "success",
+      "wall_s": 2.285
+    },
+    {
+      "scenario": "near_base",
+      "seed": 1105,
+      "expect": "success",
+      "executor_called": true,
+      "perturbed": {
+        "part_position": [
+          0.3053,
+          0.0418
+        ],
+        "yaw_deg": 0.58,
+        "friction_scale": 0.924
+      },
+      "success": true,
+      "failure_cause": null,
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.14783432769549715,
+      "longest_hold_s": 4.740000000001166,
+      "hold_min_grip_force_n": 2.451880531815857,
+      "hold_max_offset_m": 0.002750656885350642,
+      "duration_s": 15.10400000000188,
+      "final_part_pos": [
+        0.443960355288298,
+        0.27804700945524163,
+        0.02489224458159581
+      ],
+      "passed": true,
+      "outcome_class": "success",
+      "wall_s": 2.671
+    },
+    {
+      "scenario": "perturbed_shift",
+      "seed": 1106,
+      "expect": "success",
+      "executor_called": true,
+      "perturbed": {
+        "part_position": [
+          0.4491,
+          0.0967
+        ],
+        "yaw_deg": 9.87,
+        "friction_scale": 0.9834
+      },
+      "shift": {
+        "before": [
+          0.4491,
+          0.0967
+        ],
+        "after": [
+          0.4791,
+          0.0767
+        ]
+      },
+      "success": true,
+      "failure_cause": null,
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.1450062902589618,
+      "longest_hold_s": 4.2780000000010014,
+      "hold_min_grip_force_n": 2.443348305578471,
+      "hold_max_offset_m": 0.0027943527165885333,
+      "duration_s": 14.37200000000172,
+      "final_part_pos": [
+        0.4441085137209647,
+        0.27719739919435166,
+        0.02489224458167784
+      ],
+      "passed": true,
+      "outcome_class": "success",
+      "wall_s": 2.468
+    },
+    {
+      "scenario": "plan_variation",
+      "seed": 1107,
+      "expect": "success",
+      "executor_called": true,
+      "perturbed": {
+        "part_position": [
+          0.5032,
+          -0.0944
+        ],
+        "yaw_deg": -1.57,
+        "friction_scale": 1.0401
+      },
+      "success": true,
+      "failure_cause": null,
+      "lift_ok": true,
+      "transfer_ok": true,
+      "release_ok": true,
+      "max_rise_m": 0.2448008294406065,
+      "longest_hold_s": 4.828000000000231,
+      "hold_min_grip_force_n": 2.3889607288942134,
+      "hold_max_offset_m": 0.003453889827326557,
+      "duration_s": 12.912000000001148,
+      "final_part_pos": [
+        0.4441372909630741,
+        0.2787432080913687,
+        0.02489224458164618
+      ],
+      "passed": true,
+      "outcome_class": "success",
+      "wall_s": 2.209
+    },
+    {
+      "scenario": "invalid_plan_unknown_part",
+      "seed": 1108,
+      "expect": "reject",
+      "executor_called": false,
+      "passed": true,
+      "success": false,
+      "rejection": "hallucinated or unknown part: part_ghost",
+      "outcome_class": "rejected",
+      "wall_s": 0.048
+    }
+  ]
+}

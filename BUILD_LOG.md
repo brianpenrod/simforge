@@ -133,3 +133,27 @@ Participant Guide's "New work only" rule.
   GATE 3 PASS per the Oct 28 ratified amendment. Evidence results/gate3/.
 
 
+## 2026-10-30 — Gate 3 closeout + Gate 4 design lock v2 ratified
+
+- Closeout batch landed (from c02fed9): plan_schema v3.1 (strict
+  syntax, scene-state contract, parse_plan raw-parse layer),
+  evaluator v3 (shared admission boundary; scene construction
+  outside the validation try; manifest preflight), guard v2
+  (approval bound to plan+scene fingerprints; terminal audit on
+  validation, approval, and execution paths), gate3_run v2
+  (complete verdict; prior-output rotation; harness-error FAIL
+  record), gate3_target_variation.py, tests/test_admission.py,
+  tests/test_properties.py (+ hostile-JSON property).
+- Verification: pytest 55 passed (was 39). Gate 1 check PASS.
+  Gate 2 battery 20/20 (run 20261030T194538). Gate 3 closeout run
+  20261030T194658: PASS — 8/8 expectations, wall 18.3 s, agreement
+  8/8, zero flips. Target variation DEMONSTRATED (relocated rest
+  [0.148, -0.259] inside relocated bounds).
+- Gate 4 design lock v2 ratified (founder, Oct 30): human approval
+  per admitted live plan; nine supported requests + one live
+  phantom trap; trap acceptance amended in GATE_METRICS;
+  supplemental OOB observation prefiled; renamed-zone experiment
+  optional. Next: Gate 4 build (adapter v2, runner, offline
+  preflight Samples C+D, freeze, live sample).
+
+

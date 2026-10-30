@@ -2,7 +2,7 @@
 adopted Oct 29 as a SUPPLEMENT to the gate suites, not a gate criterion.
 
 Targets are the fast, pure functions a hostile input can actually
-reach: the telemetry scorer and the plan validators. Three contracts:
+reach: the telemetry scorer and the plan validators. Four contracts:
 
 1. No contiguous 2 s hold window, no lift - however the violations are
    distributed (grip loss, table contact, tracking offset, dip), and
@@ -13,6 +13,10 @@ reach: the telemetry scorer and the plan validators. Three contracts:
    finite, inside the workspace, and at/above the table. (NaN
    coordinates are the case to watch: NaN comparisons are False, so a
    check written as "z < table" alone waves NaN through.)
+4. (Oct 30, Astra review #4) Syntax accepts ONLY real JSON numbers for
+   the motion fields: strings, booleans, nulls, arrays and objects are
+   rejections, never coercions - the float-only strategy of contract 2
+   could not see these JSON types.
 """
 import math
 
@@ -97,6 +101,27 @@ def test_syntax_contract(h, s, pid, zone):
     assert 0.1 <= plan.speed_scale <= 1.0
 
 
+HOSTILE_JSON = st.one_of(
+    st.floats(allow_nan=True, allow_infinity=True),
+    st.booleans(), st.none(), st.text(max_size=8),
+    st.lists(st.integers(), max_size=2),
+    st.dictionaries(st.text(max_size=4), st.integers(), max_size=2))
+
+
+@settings(max_examples=60, deadline=None)
+@given(v=HOSTILE_JSON)
+def test_syntax_accepts_only_real_json_numbers(v):
+    raw = {"part_id": "part", "target_zone": "target_zone",
+           "approach_height_m": 0.10, "speed_scale": v}
+    acceptable = (isinstance(v, (int, float)) and not isinstance(v, bool)
+                  and math.isfinite(v) and 0.1 <= v <= 1.0)
+    if acceptable:
+        assert validate_syntax(raw).speed_scale == float(v)
+    else:
+        with pytest.raises(ValueError):
+            validate_syntax(raw)
+
+
 @settings(max_examples=60, deadline=None)
 @given(x=st.floats(allow_nan=True, allow_infinity=True),
        y=st.floats(allow_nan=True, allow_infinity=True),
@@ -116,3 +141,4 @@ def test_semantics_contract(x, y, z):
     assert all(math.isfinite(v) for v in (x, y, z))
     assert -0.5 <= x <= 0.7 and -0.4 <= y <= 0.4
     assert z >= 0.0
+

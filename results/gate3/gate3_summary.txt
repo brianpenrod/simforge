@@ -1,3 +1,8 @@
-Gate 3 run 1: 8/8 expectations met (all met: True), wall-clock 17.2 s
+Gate 3 run 20261030T194658: run 1 8/8 expectations met (all met: True), wall-clock 18.3 s (bound 1200 s)
 Fresh-draw agreement: 8/8
+  check eight_scenarios: ok
+  check unique_names: ok
+  check run1_all_expectations_met: ok
+  check run1_wall_within_bound: ok
+  check agreement_at_least_7_of_8: ok
 GATE 3: PASS

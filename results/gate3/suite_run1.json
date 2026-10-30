@@ -2,7 +2,7 @@
   "total": 8,
   "expectations_met": 8,
   "all_expectations_met": true,
-  "wall_s": 16.804,
+  "wall_s": 17.961,
   "results": [
     {
       "scenario": "nominal_center",
@@ -34,7 +34,7 @@
       ],
       "passed": true,
       "outcome_class": "success",
-      "wall_s": 2.494
+      "wall_s": 2.687
     },
     {
       "scenario": "edge_left",
@@ -66,7 +66,7 @@
       ],
       "passed": true,
       "outcome_class": "success",
-      "wall_s": 2.737
+      "wall_s": 2.851
     },
     {
       "scenario": "edge_right",
@@ -98,7 +98,7 @@
       ],
       "passed": true,
       "outcome_class": "success",
-      "wall_s": 2.392
+      "wall_s": 2.518
     },
     {
       "scenario": "far_reach",
@@ -130,7 +130,7 @@
       ],
       "passed": true,
       "outcome_class": "success",
-      "wall_s": 2.329
+      "wall_s": 2.473
     },
     {
       "scenario": "near_base",
@@ -162,7 +162,7 @@
       ],
       "passed": true,
       "outcome_class": "success",
-      "wall_s": 2.487
+      "wall_s": 2.696
     },
     {
       "scenario": "perturbed_shift",
@@ -204,7 +204,7 @@
       ],
       "passed": true,
       "outcome_class": "success",
-      "wall_s": 2.225
+      "wall_s": 2.47
     },
     {
       "scenario": "plan_variation",
@@ -236,7 +236,7 @@
       ],
       "passed": true,
       "outcome_class": "success",
-      "wall_s": 2.085
+      "wall_s": 2.221
     },
     {
       "scenario": "invalid_plan_unknown_part",
@@ -247,7 +247,7 @@
       "success": false,
       "rejection": "hallucinated or unknown part: part_ghost",
       "outcome_class": "rejected",
-      "wall_s": 0.054
+      "wall_s": 0.042
     }
   ]
 }

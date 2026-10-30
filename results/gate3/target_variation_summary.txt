@@ -1,0 +1,5 @@
+Gate 3 target-variation demonstration:
+  target_filed: success=True release_ok=True executor_called=True
+  target_relocated: success=True release_ok=True executor_called=True
+Relocated bounds x [0.08, 0.22], y [-0.32, -0.18] are disjoint from the filed bounds x [0.38, 0.52], y [0.21, 0.35]; the scorer reads bounds from the live model, so the relocated success required placement at the new destination.
+TARGET VARIATION: DEMONSTRATED
