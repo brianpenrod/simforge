@@ -25,6 +25,20 @@ Oct 30 hardening (Astra reviews #4/#5, design lock v2):
     valid scene, invalidates the approval: nothing executes and the
     invalidation is audited. Merely re-checking that a changed scene
     is still valid is NOT sufficient.
+
+Oct 30, review #6 (Gate 5 remediation):
+  - run_id: callers pass a unique run identifier; it is written on
+    EVERY audit event of the run, so suite records and audit events
+    correlate exactly (the Gate 4 audit had no correlation IDs).
+  - Interruption is a terminal audited outcome. The approval and
+    execution steps catch BaseException, not only Exception: an
+    operator interrupt (Ctrl+C / KeyboardInterrupt) at the approval
+    prompt previously escaped the guard and left the audit
+    unterminated (reproduced by Astra). It now ends the run as
+    approval_interrupted / execution_interrupted - non-success,
+    executor untouched on the approval path. The CALLER decides
+    what an interrupted status means for its own control flow;
+    the guard never silently continues a suite past an interrupt.
 """
 from __future__ import annotations
 
@@ -91,6 +105,7 @@ class AuditLog:
 class GuardResult:
     # executed | rejected | validation_failed | execution_failed
     # approval_invalidated | approval_error
+    # approval_interrupted | execution_interrupted   (review #6)
     status: str
     plan: Plan | None = None
     outcome: object = None
@@ -98,7 +113,7 @@ class GuardResult:
 
 
 def run_guarded(raw_plan, scene_state, executor, approve, audit: AuditLog,
-                scene_provider=None) -> GuardResult:
+                scene_provider=None, run_id=None) -> GuardResult:
     """Validate, seek approval, execute if approved, audit everything.
 
     executor: callable(Plan) -> outcome (called ONLY after approval,
@@ -107,38 +122,48 @@ def run_guarded(raw_plan, scene_state, executor, approve, audit: AuditLog,
     approve:  callable(Plan) -> bool   (the human gate)
     scene_provider: optional callable() -> fresh scene_state, consulted
               immediately before execution for the binding re-check.
+    run_id: optional caller-supplied run identifier, written on every
+              audit event of this run for exact correlation.
     """
-    audit.write("plan_received", raw_plan=raw_plan)
+    def _write(event: str, **fields) -> dict:
+        if run_id is not None:
+            fields.setdefault("run_id", run_id)
+        return audit.write(event, **fields)
+
+    _write("plan_received", raw_plan=raw_plan)
     try:
         plan = validate_syntax(raw_plan)
         validate_semantics(plan, scene_state)
-    except Exception as exc:
-        audit.write("validation_failed", error=str(exc),
-                    error_type=type(exc).__name__)
+    except BaseException as exc:
+        _write("validation_failed", error=str(exc),
+               error_type=type(exc).__name__)
         return GuardResult(status="validation_failed", error=str(exc))
     plan_fp = _plan_fingerprint(plan)
     scene_fp = _scene_fingerprint(scene_state)
-    audit.write("validated", plan=plan.__dict__,
-                plan_fingerprint=plan_fp, scene_fingerprint=scene_fp)
+    _write("validated", plan=plan.__dict__,
+           plan_fingerprint=plan_fp, scene_fingerprint=scene_fp)
 
     try:
         approved = approve(plan)
-    except Exception as exc:
-        audit.write("approval_error", plan=plan.__dict__, error=str(exc),
-                    error_type=type(exc).__name__)
-        return GuardResult(status="approval_error", plan=plan,
-                           error=str(exc))
+    except BaseException as exc:
+        interrupted = not isinstance(exc, Exception)
+        _write("approval_interrupted" if interrupted else "approval_error",
+               plan=plan.__dict__, error=str(exc),
+               error_type=type(exc).__name__)
+        return GuardResult(
+            status="approval_interrupted" if interrupted else "approval_error",
+            plan=plan, error=str(exc))
     if not approved:
-        audit.write("rejected", plan=plan.__dict__,
-                    plan_fingerprint=plan_fp)
+        _write("rejected", plan=plan.__dict__,
+               plan_fingerprint=plan_fp)
         return GuardResult(status="rejected", plan=plan)
-    audit.write("approved", plan=plan.__dict__, plan_fingerprint=plan_fp)
+    _write("approved", plan=plan.__dict__, plan_fingerprint=plan_fp)
 
     # Binding re-check: the approval covers THIS plan in THIS scene.
     if _plan_fingerprint(plan) != plan_fp:
-        audit.write("approval_invalidated",
-                    reason="plan changed after approval",
-                    plan=plan.__dict__)
+        _write("approval_invalidated",
+               reason="plan changed after approval",
+               plan=plan.__dict__)
         return GuardResult(status="approval_invalidated", plan=plan,
                            error="plan changed after approval")
     if scene_provider is not None:
@@ -146,27 +171,31 @@ def run_guarded(raw_plan, scene_state, executor, approve, audit: AuditLog,
             fresh_scene = scene_provider()
             validate_semantics(plan, fresh_scene)
             fresh_fp = _scene_fingerprint(fresh_scene)
-        except Exception as exc:
-            audit.write("approval_invalidated",
-                        reason="fresh scene state failed validation",
-                        error=str(exc), error_type=type(exc).__name__)
+        except BaseException as exc:
+            _write("approval_invalidated",
+                   reason="fresh scene state failed validation",
+                   error=str(exc), error_type=type(exc).__name__)
             return GuardResult(status="approval_invalidated", plan=plan,
                                error=str(exc))
         if fresh_fp != scene_fp:
-            audit.write("approval_invalidated",
-                        reason="scene changed after approval",
-                        scene_fingerprint=scene_fp,
-                        fresh_scene_fingerprint=fresh_fp)
+            _write("approval_invalidated",
+                   reason="scene changed after approval",
+                   scene_fingerprint=scene_fp,
+                   fresh_scene_fingerprint=fresh_fp)
             return GuardResult(status="approval_invalidated", plan=plan,
                                error="scene changed after approval")
 
     try:
         outcome = executor(plan)
-    except Exception as exc:
-        audit.write("execution_failed", plan=plan.__dict__,
-                    error=str(exc), error_type=type(exc).__name__)
-        return GuardResult(status="execution_failed", plan=plan,
-                           error=str(exc))
-    audit.write("executed", plan=plan.__dict__, outcome=str(outcome))
+    except BaseException as exc:
+        interrupted = not isinstance(exc, Exception)
+        _write("execution_interrupted" if interrupted else "execution_failed",
+               plan=plan.__dict__, error=str(exc),
+               error_type=type(exc).__name__)
+        return GuardResult(
+            status="execution_interrupted" if interrupted else "execution_failed",
+            plan=plan, error=str(exc))
+    _write("executed", plan=plan.__dict__, outcome=str(outcome))
     return GuardResult(status="executed", plan=plan, outcome=outcome)
+
 
