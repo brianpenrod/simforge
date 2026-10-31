@@ -1,0 +1,8 @@
+Gate 4 - Sample A summary
+
+Conformance (parse+syntax): 10/10 (PASS vs >=9/10 bar)
+Latency: median 2032 ms, max 4532 ms (soft target 15 s)
+Executed: 10 | physics success: 10
+Trap (case-09) stopped at: executed
+case-07/08 replay: replayed
+S1 latency (separate): 2437.000000005355 ms

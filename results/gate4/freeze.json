@@ -1,0 +1,14 @@
+{
+  "frozen_at": "2026-10-30T20:19:05-0400",
+  "git_head": "e9ae4f42b4f559a37cda5545bbc1550c3bc339c6",
+  "system_prompt_sha256": "1218b20f9d1d60983c2750858b414008e6b05bdec390ae75e1ed3aaee96723a6",
+  "files": {
+    "gate4_requests.json": "9e160d04daa8851f1efdf58b8eb8c356c64611d7fd70e1a1410d61a3ab302c96",
+    "gate4_run.py": "c8e5972b9dadfadebc7bf4bbe60988fa4d1b1c101e64baf07dfb4e35dcb92478",
+    "gate4_stub.py": "99612258b3e1ffb18df95a015553309be3a1f93f245ea027375d6360c9104d24",
+    "src/simforge/model_adapter.py": "6d6ea7cc61450b44fbfa28a58407700d876f2cdfb1f5843ae7ed94ff92d10c27",
+    "src/simforge/plan_schema.py": "d4b96da6b8d36cfb9a9f15b23d5eb0aa3d3f3230a21d47ba4b16536e05da82a0",
+    "src/simforge/guard.py": "4f01f6fc65707aa44292c133adce47a1a304e1844a7b7d2358ee0f00ba8b9bbc",
+    "src/simforge/evaluator.py": "7f1fab0f7a1c1c08e6aaa7a9cc6ef63cf86edf607b2976b59ee3bac89eb475f2"
+  }
+}

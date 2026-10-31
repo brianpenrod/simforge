@@ -157,3 +157,27 @@ Participant Guide's "New work only" rule.
   preflight Samples C+D, freeze, live sample).
 
 
+## 2026-10-30 — Gate 4 built, frozen, and PASSED
+
+- Built per design lock v2: model_adapter v2 (propose_plan with
+  provenance, max_retries=0, reasoning low; mock fixed to the
+  frozen cell's real identifiers), gate4_requests.json (Astra
+  manifest verbatim), gate4_stub.py, gate4_run.py (plumbing,
+  sample-c, sample-d, causality, freeze, sample-a modes; D1
+  human-approval display). Suite: 59 tests passing.
+- Preflight (all offline except one plumbing call): plumbing
+  live OK (2.1 s); Sample C 11/11; Sample D 6/6, one request per
+  fault; causality B1/B2/B3 PASS (B2 runner criterion corrected
+  to the ratified duration+success form during rehearsal).
+- Build committed (e9ae4f4) and frozen by hash at 20:19 ET.
+- Sample A (same evening): conformance 10/10; latency median
+  2.03 s / max 4.53 s; 10/10 executions, physics 10/10;
+  case-06 relocated zone executed; case-07/08 replay delta
+  5.93 s. Trap case-09: model substituted the part for the
+  phantom gear - recorded as a model task-correctness failure;
+  human approval of the substitute also recorded; no validator
+  credit claimed. S1 recorded, not executed.
+- VERDICT: GATE 4 PASS. Remaining: Gate 5 (Nov 2), demo
+  recording (Nov 1-2), submission (Nov 3 EOD).
+
+
