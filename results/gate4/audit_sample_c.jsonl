@@ -1,0 +1,16 @@
+{"ts": "2026-10-30T20:08:25-0400", "event": "plan_received", "raw_plan": {"part_id": "gear_red", "target_zone": "target_zone", "approach_height_m": 0.15, "speed_scale": 0.5}}
+{"ts": "2026-10-30T20:08:25-0400", "event": "validation_failed", "error": "hallucinated or unknown part: gear_red", "error_type": "ValueError"}
+{"ts": "2026-10-30T20:08:25-0400", "event": "plan_received", "raw_plan": {"part_id": "part", "target_zone": "target_zone", "approach_height_m": 0.15, "speed_scale": 0.5}}
+{"ts": "2026-10-30T20:08:25-0400", "event": "validation_failed", "error": "zone 'target_zone' lies outside the workspace", "error_type": "ValueError"}
+{"ts": "2026-10-30T20:08:25-0400", "event": "plan_received", "raw_plan": {"part_id": "part", "target_zone": "target_zone", "approach_height_m": 0.15, "speed_scale": 0.5}}
+{"ts": "2026-10-30T20:08:25-0400", "event": "validation_failed", "error": "grasp target below table surface", "error_type": "ValueError"}
+{"ts": "2026-10-30T20:08:25-0400", "event": "plan_received", "raw_plan": {"part_id": "part", "target_zone": "target_zone", "approach_height_m": 0.15, "speed_scale": "0.5"}}
+{"ts": "2026-10-30T20:08:25-0400", "event": "validation_failed", "error": "speed_scale must be a JSON number, got str", "error_type": "ValueError"}
+{"ts": "2026-10-30T20:08:25-0400", "event": "plan_received", "raw_plan": {"part_id": "part", "target_zone": "target_zone", "approach_height_m": 0.15, "speed_scale": true}}
+{"ts": "2026-10-30T20:08:25-0400", "event": "validation_failed", "error": "speed_scale must be a JSON number, got bool", "error_type": "ValueError"}
+{"ts": "2026-10-30T20:08:25-0400", "event": "plan_received", "raw_plan": {"part_id": "part", "target_zone": "target_zone", "approach_height_m": 0.15, "speed_scale": 0.5, "grip_force": 3}}
+{"ts": "2026-10-30T20:08:25-0400", "event": "validation_failed", "error": "plan fields must be exactly ['approach_height_m', 'part_id', 'speed_scale', 'target_zone']; missing=[], extra=['grip_force']", "error_type": "ValueError"}
+{"ts": "2026-10-30T20:08:25-0400", "event": "plan_received", "raw_plan": {"part_id": "part", "target_zone": "target_zone", "approach_height_m": 0.15, "speed_scale": 0.5}}
+{"ts": "2026-10-30T20:08:25-0400", "event": "validated", "plan": {"part_id": "part", "target_zone": "target_zone", "approach_height_m": 0.15, "speed_scale": 0.5}, "plan_fingerprint": "e9bd41d7d51a87cf842fb5ce96ae41a29e597a54c2909c28bcd3077eb9c0f3ea", "scene_fingerprint": "6e0714829f71dc42602d36e9986b5ff97cc896fa8e89b79e502c544d87a450ef"}
+{"ts": "2026-10-30T20:08:25-0400", "event": "approved", "plan": {"part_id": "part", "target_zone": "target_zone", "approach_height_m": 0.15, "speed_scale": 0.5}, "plan_fingerprint": "e9bd41d7d51a87cf842fb5ce96ae41a29e597a54c2909c28bcd3077eb9c0f3ea"}
+{"ts": "2026-10-30T20:08:25-0400", "event": "executed", "plan": {"part_id": "part", "target_zone": "target_zone", "approach_height_m": 0.15, "speed_scale": 0.5}, "outcome": "{'counted_execution': True}"}

@@ -1,0 +1,23 @@
+{
+  "sample": "B (offline rehearsal, derived controls)",
+  "b1_identical_plan_twice": {
+    "pose_delta_m": 0.0,
+    "duration_delta_s": 0.0,
+    "timestep_s": 0.002,
+    "passed": true
+  },
+  "b2_speed_field_effect": {
+    "slow_duration_s": 19.319999999999894,
+    "fast_duration_s": 13.160000000001231,
+    "duration_delta_s": 6.1599999999986625,
+    "pose_delta_m": 0.00040220382031569413,
+    "pose_note": "informational only - the ratified B2 criterion is duration + success",
+    "passed": true
+  },
+  "b3_rejected_plan_control": {
+    "guard_status": "validation_failed",
+    "executor_calls": 0,
+    "passed": true
+  },
+  "all_passed": true
+}

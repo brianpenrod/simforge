@@ -1,0 +1,116 @@
+{
+  "sample": "C",
+  "all_passed": true,
+  "cases": [
+    {
+      "id": "C1",
+      "label": "unknown part (semantic)",
+      "expected_failed_layer": "semantics",
+      "observed_failed_layer": "semantics",
+      "error": "hallucinated or unknown part: gear_red",
+      "guard_status": "validation_failed",
+      "executor_calls": 0,
+      "passed": true
+    },
+    {
+      "id": "C2",
+      "label": "known zone, out-of-workspace bounds (semantic)",
+      "expected_failed_layer": "semantics",
+      "observed_failed_layer": "semantics",
+      "error": "zone 'target_zone' lies outside the workspace",
+      "guard_status": "validation_failed",
+      "executor_calls": 0,
+      "passed": true
+    },
+    {
+      "id": "C3",
+      "label": "part below table, scene fixture (semantic)",
+      "expected_failed_layer": "semantics",
+      "observed_failed_layer": "semantics",
+      "error": "grasp target below table surface",
+      "guard_status": "validation_failed",
+      "executor_calls": 0,
+      "passed": true
+    },
+    {
+      "id": "C4a",
+      "label": "speed as string '0.5' (syntax)",
+      "expected_failed_layer": "syntax",
+      "observed_failed_layer": "syntax",
+      "error": "speed_scale must be a JSON number, got str",
+      "guard_status": "validation_failed",
+      "executor_calls": 0,
+      "passed": true
+    },
+    {
+      "id": "C4b",
+      "label": "speed as boolean true (syntax)",
+      "expected_failed_layer": "syntax",
+      "observed_failed_layer": "syntax",
+      "error": "speed_scale must be a JSON number, got bool",
+      "guard_status": "validation_failed",
+      "executor_calls": 0,
+      "passed": true
+    },
+    {
+      "id": "C5a",
+      "label": "extra key (syntax)",
+      "expected_failed_layer": "syntax",
+      "observed_failed_layer": "syntax",
+      "error": "plan fields must be exactly ['approach_height_m', 'part_id', 'speed_scale', 'target_zone']; missing=[], extra=['grip_force']",
+      "guard_status": "validation_failed",
+      "executor_calls": 0,
+      "passed": true
+    },
+    {
+      "id": "C5b",
+      "label": "duplicate keys (parse)",
+      "expected_failed_layer": "parse",
+      "observed_failed_layer": "parse",
+      "error": "duplicate key in plan JSON: 'part_id'",
+      "guard_status": null,
+      "executor_calls": 0,
+      "passed": true
+    },
+    {
+      "id": "C5c",
+      "label": "NaN literal (parse)",
+      "expected_failed_layer": "parse",
+      "observed_failed_layer": "parse",
+      "error": "non-finite literal in plan JSON: NaN",
+      "guard_status": null,
+      "executor_calls": 0,
+      "passed": true
+    },
+    {
+      "id": "C5d",
+      "label": "malformed JSON (parse)",
+      "expected_failed_layer": "parse",
+      "observed_failed_layer": "parse",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "guard_status": null,
+      "executor_calls": 0,
+      "passed": true
+    },
+    {
+      "id": "C5e",
+      "label": "empty response (parse)",
+      "expected_failed_layer": "parse",
+      "observed_failed_layer": "parse",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "guard_status": null,
+      "executor_calls": 0,
+      "passed": true
+    },
+    {
+      "id": "C6",
+      "label": "valid plan, positive control",
+      "expected_failed_layer": null,
+      "observed_failed_layer": null,
+      "error": null,
+      "guard_status": "executed",
+      "executor_calls": 1,
+      "passed": true
+    }
+  ]
+}

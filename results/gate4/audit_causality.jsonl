@@ -1,0 +1,2 @@
+{"ts": "2026-10-30T20:16:01-0400", "event": "plan_received", "raw_plan": {"part_id": "gear_red", "target_zone": "target_zone", "approach_height_m": 0.15, "speed_scale": 0.5}}
+{"ts": "2026-10-30T20:16:01-0400", "event": "validation_failed", "error": "hallucinated or unknown part: gear_red", "error_type": "ValueError"}

@@ -1,0 +1,62 @@
+{
+  "sample": "D",
+  "test_timeout_s": 3.0,
+  "note": "Production adapter/parser path vs local stub; the 3 s test timeout exercises the timeout path without a 20 s wait. Request count proves the SDK retry policy (max_retries=0).",
+  "all_passed": true,
+  "cases": [
+    {
+      "mode": "valid",
+      "expected": null,
+      "observed": null,
+      "error_type": null,
+      "finish_reason": "stop",
+      "requests_received": 1,
+      "passed": true
+    },
+    {
+      "mode": "malformed",
+      "expected": "parse",
+      "observed": "parse",
+      "error_type": null,
+      "finish_reason": "stop",
+      "requests_received": 1,
+      "passed": true
+    },
+    {
+      "mode": "empty",
+      "expected": "parse",
+      "observed": "parse",
+      "error_type": null,
+      "finish_reason": "stop",
+      "requests_received": 1,
+      "passed": true
+    },
+    {
+      "mode": "truncated",
+      "expected": "parse",
+      "observed": "parse",
+      "error_type": null,
+      "finish_reason": "length",
+      "requests_received": 1,
+      "passed": true
+    },
+    {
+      "mode": "slow",
+      "expected": "api_error",
+      "observed": "api_error",
+      "error_type": "APITimeoutError",
+      "finish_reason": null,
+      "requests_received": 1,
+      "passed": true
+    },
+    {
+      "mode": "error500",
+      "expected": "api_error",
+      "observed": "api_error",
+      "error_type": "InternalServerError",
+      "finish_reason": null,
+      "requests_received": 1,
+      "passed": true
+    }
+  ]
+}
