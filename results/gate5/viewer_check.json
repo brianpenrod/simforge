@@ -1,0 +1,50 @@
+{
+  "check": "viewer-boundary-equality",
+  "fixture": "DEMO-1",
+  "passed": false,
+  "headless": {
+    "success": true,
+    "failure_cause": null,
+    "lift_ok": true,
+    "transfer_ok": true,
+    "release_ok": true,
+    "max_rise_m": 0.19520554547975563,
+    "longest_hold_s": 5.146000000000957,
+    "hold_min_grip_force_n": 0.8232155248178481,
+    "hold_max_offset_m": 0.003320556579706116,
+    "duration_s": 14.848000000001795,
+    "final_part_pos": [
+      0.444404429315399,
+      0.27596967871867284,
+      0.024892244581615743
+    ],
+    "sim_duration_s": 14.850000000001796
+  },
+  "viewer": {
+    "success": true,
+    "failure_cause": null,
+    "lift_ok": true,
+    "transfer_ok": true,
+    "release_ok": true,
+    "max_rise_m": 0.1952055284970192,
+    "longest_hold_s": 5.146000000000957,
+    "hold_min_grip_force_n": 0.823216146031303,
+    "hold_max_offset_m": 0.0033206703025583915,
+    "duration_s": 14.848000000001795,
+    "final_part_pos": [
+      0.4444042734216167,
+      0.2759696537823101,
+      0.02489224458161655
+    ],
+    "sim_duration_s": 14.850000000001796
+  },
+  "max_final_xy_delta_m": 1.558937822720985e-07,
+  "duration_delta_s": 0.0,
+  "xfrc_applied_max_abs_after_viewer_run": 0.0,
+  "candidate_hashes": {
+    "guard": "233c6d498fd0d8974953d693a8ebedf22c076de3ddec79da2f5b2260e6173978",
+    "gate5_suite": "e2e7c5ea6837f85a75d5cc5dd42c33639101bd6e9f64134deec52872bfc003a7",
+    "gate5_demo": "e595bd943889d7dc4a752adc8a25530c52b03f847ebb21190bf6ebf8312d6b28"
+  },
+  "ts": "2026-10-31T11:19:36-0400"
+}

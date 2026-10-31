@@ -1,0 +1,61 @@
+{
+  "run": "gate4-repair-stub-orchestration",
+  "note": "Remediation evidence (Astra review #6): Sample D modes driven through adapter + parser + guard with a counting executor. Original Sample D records retained; Gate 4 verdict unchanged (NOT PASSED). Test timeout 3 s (labeled).",
+  "cases": [
+    {
+      "mode": "valid",
+      "outcome": "guard_executed",
+      "guard_status": "executed",
+      "expected": "guard_executed",
+      "requests": 1,
+      "executor_calls": 1,
+      "passed": true
+    },
+    {
+      "mode": "malformed",
+      "outcome": "parse_failed",
+      "guard_status": null,
+      "expected": "parse_failed",
+      "requests": 1,
+      "executor_calls": 0,
+      "passed": true
+    },
+    {
+      "mode": "empty",
+      "outcome": "parse_failed",
+      "guard_status": null,
+      "expected": "parse_failed",
+      "requests": 1,
+      "executor_calls": 0,
+      "passed": true
+    },
+    {
+      "mode": "truncated",
+      "outcome": "parse_failed",
+      "guard_status": null,
+      "expected": "parse_failed",
+      "requests": 1,
+      "executor_calls": 0,
+      "passed": true
+    },
+    {
+      "mode": "slow",
+      "outcome": "adapter_timeout",
+      "guard_status": null,
+      "expected": "adapter_timeout",
+      "requests": 1,
+      "executor_calls": 0,
+      "passed": true
+    },
+    {
+      "mode": "error500",
+      "outcome": "adapter_error",
+      "guard_status": null,
+      "expected": "adapter_error",
+      "requests": 1,
+      "executor_calls": 0,
+      "passed": true
+    }
+  ],
+  "passed": true
+}

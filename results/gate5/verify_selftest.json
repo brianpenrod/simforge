@@ -1,0 +1,99 @@
+{
+  "selftest": {
+    "intact_passes": true,
+    "deleted_terminal_caught": true,
+    "duplicated_terminal_caught": true,
+    "orphan_caught": true,
+    "malformed_caught": true,
+    "case_removal_caught": true
+  },
+  "all_passed": true,
+  "reports": {
+    "intact": {
+      "manifest_total": 3,
+      "records": 3,
+      "started": 3,
+      "completed": 3,
+      "matched": 3,
+      "suite_completion": 1.0,
+      "audit_completeness": 1.0,
+      "defects": [],
+      "passed": true
+    },
+    "deleted_terminal": {
+      "manifest_total": 3,
+      "records": 3,
+      "started": 3,
+      "completed": 3,
+      "matched": 2,
+      "suite_completion": 1.0,
+      "audit_completeness": 0.6666666666666666,
+      "defects": [],
+      "passed": false
+    },
+    "duplicated_terminal": {
+      "manifest_total": 3,
+      "records": 3,
+      "started": 3,
+      "completed": 3,
+      "matched": 2,
+      "suite_completion": 1.0,
+      "audit_completeness": 0.6666666666666666,
+      "defects": [
+        {
+          "kind": "duplicate_terminal",
+          "detail": "T:C3"
+        }
+      ],
+      "passed": false
+    },
+    "orphan_run": {
+      "manifest_total": 3,
+      "records": 3,
+      "started": 3,
+      "completed": 3,
+      "matched": 3,
+      "suite_completion": 1.0,
+      "audit_completeness": 1.0,
+      "defects": [
+        {
+          "kind": "orphan_audit_run",
+          "detail": "T:C9"
+        }
+      ],
+      "passed": false
+    },
+    "malformed_line": {
+      "manifest_total": 3,
+      "records": 3,
+      "started": 3,
+      "completed": 3,
+      "matched": 3,
+      "suite_completion": 1.0,
+      "audit_completeness": 1.0,
+      "defects": [
+        {
+          "kind": "malformed_audit_line",
+          "detail": "1 unparseable line(s)"
+        }
+      ],
+      "passed": false
+    },
+    "case_removed_everywhere": {
+      "manifest_total": 3,
+      "records": 2,
+      "started": 2,
+      "completed": 2,
+      "matched": 2,
+      "suite_completion": 0.6666666666666666,
+      "audit_completeness": 1.0,
+      "defects": [
+        {
+          "kind": "missing_run_record",
+          "detail": "C2"
+        }
+      ],
+      "passed": false
+    }
+  }
+}

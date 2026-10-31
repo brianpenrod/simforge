@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "purpose": "Gate 5 fault-probe inventory (design lock ratified Oct 30, 2026). Separate bounded segment with its own records and audit file; exercises the guard's exception paths deterministically.",
+  "note": "Order matters: the interrupt probe is LAST - its expected outcome is the segment stop itself (prefiled). Probes use a counting executor and the reject-scene state; no physics runs in this segment.",
+  "probes": [
+    {"id": "PROBE-APPROVAL-ERROR", "kind": "approval_error", "expected_status": "approval_error"},
+    {"id": "PROBE-EXECUTION-ERROR", "kind": "execution_error", "expected_status": "execution_failed"},
+    {"id": "PROBE-INVALIDATION", "kind": "invalidation", "expected_status": "approval_invalidated"},
+    {"id": "PROBE-INTERRUPT", "kind": "interrupt", "expected_status": "approval_interrupted"}
+  ]
+}
