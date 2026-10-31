@@ -181,3 +181,27 @@ Participant Guide's "New work only" rule.
   recording (Nov 1-2), submission (Nov 3 EOD).
 
 
+## 2026-10-30 — CORRECTION: Gate 4 verdict overturned (Astra review #6)
+
+- Astra adjudicated the Gate 4 PASS verdict (commit 47d32e4) and
+  overturned it. Mayordomo re-checked every finding against
+  source and upholds the overturn. GATE 4: NOT PASSED.
+- Core failure: case-09 trap containment. The amendment required
+  zero executions arising from the trap case; the model's
+  substituted plan was human-approved and executed. The original
+  verdict's reading ("the phantom request itself never
+  executed") was vacuous. Root defect: the frozen manifest's
+  trap check was written weaker than the ratified requirement.
+- Also upheld: six causality/replay executions bypassed the
+  guard; Sample D never invoked the guard (orchestration
+  unproven); audit correlation/terminal-record gaps, incl. an
+  unaudited KeyboardInterrupt path at approval (reproduced).
+- Measurements stand (Astra independently revalidated):
+  conformance 10/10, latency median 2.03 s / max 4.53 s, physics
+  10/10 on executed plans, causality numbers as recorded.
+- Path: corrections appended to GATE_METRICS; remediation folds
+  into Gate 5 (guard v3, guarded reruns, labeled trap-rejection
+  replay, audit verifier). Original run + verdict preserved in
+  history. Submission remains Tue Nov 3 EOD.
+
+
