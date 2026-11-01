@@ -53,16 +53,22 @@ Modes:
                    rejected/not_executed, an executed terminal whose
                    plan was substituted, and a nonterminal orphan
                    event - all must be caught.
-  freeze-selftest  The freeze's targeted controls (reviews #9-#10),
-                   run on a synthetic tree BEFORE freezing: an intact
-                   freeze is accepted; byte edits to the root scene,
+  freeze-selftest  The freeze's targeted controls (reviews #9-#11),
+                   run on a synthetic tree BEFORE freezing. The intact
+                   fixture mirrors the real scene structure: a
+                   parent-relative Panda include, the Panda compiler
+                   meshdir, and an asset-directory link. Controls: an
+                   intact freeze is accepted and the parent-relative
+                   include resolves; byte edits to the root scene,
                    the Panda XML, a Panda asset, gate4_run.py, and
                    gate4_stub.py each invalidate it; an added scene
                    file invalidates it; a missing required dependency
                    prevents freezing at all; the loader-facing
-                   scene/assets tree is inventoried and a byte edit
-                   through it invalidates the freeze; and an XML-
-                   referenced mesh that is missing prevents freezing.
+                   scene/assets alias is inventoried, and a byte edit
+                   through it or a redirected alias invalidates the
+                   freeze; an XML-referenced mesh that is missing
+                   prevents freezing, and a same-named shadow file in
+                   the wrong directory does not conceal the gap.
 
 Sim imports are lazy so verify / verify-selftest / freeze run
 without the simulator stack.
@@ -240,16 +246,25 @@ def _check_freeze() -> dict:
 
 def _referenced_assets():
     """Assets the loader will open, per the inventoried XMLs
-    (review #10). A directory scan cannot see a referenced mesh
-    that is missing - the file simply never enters the inventory -
-    so the references themselves are validated: every `file`
-    attribute in every inventoried scene/model XML (includes,
-    meshes, textures) is resolved the way MuJoCo resolves it
-    (relative to the XML's directory, with the compiler's meshdir
-    / texturedir applied) and must exist on disk. Returns
-    (resolved, missing): resolved = repo-relative paths the
-    references land on; missing = human-readable broken
-    references."""
+    (reviews #10-#11). A directory scan cannot see a referenced
+    mesh that is missing - the file simply never enters the
+    inventory - so the references themselves are validated.
+    Resolution is EXACT, the way MuJoCo resolves it - never a
+    list of fallback directories (review #11: a same-named file
+    in the wrong directory must not conceal a missing mesh):
+      mesh     -> compiler meshdir, else assetdir, else the
+                  XML's own directory
+      texture  -> compiler texturedir, else assetdir, else the
+                  XML's own directory
+      include  -> the including XML's directory, always
+      other    -> compiler assetdir, else the XML's directory
+    Resolved paths are normalized before comparison - a
+    parent-relative reference like the scene's real
+    ../third_party/... include collapses to the same form the
+    inventory carries (review #11). Returns (resolved, missing):
+    resolved = repo-relative paths the references land on;
+    missing = human-readable broken references."""
+    import posixpath
     import xml.etree.ElementTree as ET
     resolved, missing = set(), []
     for rel in FREEZE_FILES:
@@ -262,25 +277,36 @@ def _referenced_assets():
             missing.append(f"{rel}: unparseable XML ({exc})")
             continue
         compiler = root_el.find("compiler")
-        meshdir = compiler.get("meshdir") if compiler is not None else None
-        texturedir = (compiler.get("texturedir")
-                      if compiler is not None else None)
+
+        def _setting(name, _c=compiler):
+            return _c.get(name) if _c is not None else None
+
         xdir = xpath.parent
         for el in root_el.iter():
             ref = el.get("file")
             if not ref or ref.startswith("/") or "://" in ref:
                 continue
-            candidates = [xdir / ref]
-            if meshdir:
-                candidates.append(xdir / meshdir / ref)
-            if texturedir:
-                candidates.append(xdir / texturedir / ref)
-            hit = next((c for c in candidates if c.is_file()), None)
-            if hit is None:
-                missing.append(f"{rel}: referenced file {ref!r} "
-                               f"not found")
+            if el.tag == "mesh":
+                sub = _setting("meshdir") or _setting("assetdir")
+            elif el.tag == "texture":
+                sub = _setting("texturedir") or _setting("assetdir")
+            elif el.tag == "include":
+                sub = None
             else:
-                resolved.add(hit.relative_to(ROOT).as_posix())
+                sub = _setting("assetdir")
+            raw = (xdir / sub / ref) if sub else (xdir / ref)
+            if not raw.is_file():
+                missing.append(f"{rel}: referenced file {ref!r} "
+                               f"not found at its resolved location")
+                continue
+            try:
+                rel_resolved = posixpath.normpath(
+                    raw.relative_to(ROOT).as_posix())
+            except ValueError:
+                missing.append(f"{rel}: referenced file {ref!r} "
+                               f"resolves outside the repository")
+                continue
+            resolved.add(rel_resolved)
     return resolved, missing
 
 
@@ -297,11 +323,11 @@ def _assert_referenced_assets() -> None:
 
 
 def mode_freeze_selftest() -> None:
-    """Targeted freeze controls (review #9), run on a synthetic
-    tree in a temp directory: the module globals are pointed at
-    the fixture, the REAL inventory/freeze/check code runs, and
-    every mutation must invalidate the freeze. The real tree is
-    never touched."""
+    """Targeted freeze controls (reviews #9-#11), run on a
+    synthetic tree in a temp directory: the module globals are
+    pointed at the fixture, the REAL inventory/freeze/check code
+    runs, and every mutation must invalidate the freeze. The real
+    tree is never touched."""
     import contextlib
     import io
     import tempfile
@@ -319,20 +345,42 @@ def mode_freeze_selftest() -> None:
 
             w("src/simforge/__init__.py", "")
             w("src/simforge/sim/cell.py", "# loader fixture")
-            # The scene XML references its mesh through the
-            # loader-facing assets path (compiler meshdir); the
-            # Panda XML references its own mesh the same way
-            # (review #10 fixtures).
+            # The intact fixture mirrors the REAL repository
+            # structure (review #11): the scene XML includes the
+            # Panda model by a PARENT-RELATIVE path, the Panda XML
+            # resolves its mesh through its compiler meshdir, and
+            # scene/assets is a directory LINK to the Panda assets
+            # (a real directory of copies stands in where link
+            # creation is not permitted, e.g. stock Windows).
             w("scene/cell.xml",
-              '<mujoco><compiler meshdir="assets"/><asset>'
-              '<mesh name="part" file="link0.stl"/></asset></mujoco>')
-            w("scene/assets/link0.stl", "scene mesh fixture")
+              '<mujoco><include file="../third_party/'
+              'mujoco_menagerie/franka_emika_panda/panda.xml"/>'
+              '</mujoco>')
             w("third_party/mujoco_menagerie/franka_emika_panda/"
               "panda.xml",
               '<mujoco><compiler meshdir="assets"/><asset>'
               '<mesh name="panda" file="link0.stl"/></asset></mujoco>')
             w("third_party/mujoco_menagerie/franka_emika_panda/"
               "assets/link0.stl", "solid fixture")
+            w("altassets/link0.stl", "DIFFERENT bytes fixture")
+            assets_link = troot / "scene" / "assets"
+            assets_target = (troot / "third_party" / "mujoco_menagerie"
+                             / "franka_emika_panda" / "assets")
+            link_mode = "dir"
+            try:
+                os.symlink(assets_target, assets_link,
+                           target_is_directory=True)
+                link_mode = "symlink"
+            except OSError:
+                assets_link.mkdir(parents=True, exist_ok=True)
+                (assets_link / "link0.stl").write_text("solid fixture")
+
+            def _unlink_link(p):
+                try:
+                    p.unlink()
+                except OSError:
+                    os.rmdir(p)
+
             for rel in ("gate5_run.py", "gate5_demo.py",
                         "gate4_repairs.py", "gate4_run.py",
                         "gate4_stub.py"):
@@ -354,6 +402,10 @@ def mode_freeze_selftest() -> None:
                 and "gate4_stub.py" in FREEZE_FILES
             checks["inventory_covers_loader_assets"] = \
                 "scene/assets/link0.stl" in FREEZE_FILES
+            _res, _miss = _referenced_assets()
+            checks["parent_relative_include_resolves"] = (
+                "third_party/mujoco_menagerie/franka_emika_panda/"
+                "panda.xml" in _res and not _miss)
             with contextlib.redirect_stdout(io.StringIO()):
                 mode_freeze()
             try:
@@ -391,11 +443,33 @@ def mode_freeze_selftest() -> None:
             except SystemExit:
                 checks["added_file_rejected"] = True
             (troot / "scene" / "added.xml").unlink()
+            # Redirecting the assets alias at different bytes
+            # invalidates the freeze (review #11).
+            if link_mode == "symlink":
+                _unlink_link(assets_link)
+                os.symlink(troot / "altassets", assets_link,
+                           target_is_directory=True)
+            else:
+                (assets_link / "link0.stl").write_text(
+                    "DIFFERENT bytes fixture")
+            try:
+                _check_freeze()
+                checks["alias_redirect_rejected"] = False
+            except SystemExit:
+                checks["alias_redirect_rejected"] = True
+            if link_mode == "symlink":
+                _unlink_link(assets_link)
+                os.symlink(assets_target, assets_link,
+                           target_is_directory=True)
+            else:
+                (assets_link / "link0.stl").write_text("solid fixture")
             # An XML-referenced mesh missing BEFORE freezing
             # blocks the freeze (review #10): the file drops out
             # of the directory scan entirely, so only the
             # reference validation can catch it.
-            (troot / "scene" / "assets" / "link0.stl").unlink()
+            panda_assets = (troot / "third_party" / "mujoco_menagerie"
+                            / "franka_emika_panda" / "assets")
+            (panda_assets / "link0.stl").unlink()
             FREEZE_FILES = _freeze_inventory()
             try:
                 with contextlib.redirect_stdout(io.StringIO()):
@@ -403,7 +477,26 @@ def mode_freeze_selftest() -> None:
                 checks["referenced_mesh_missing_blocks_freeze"] = False
             except SystemExit:
                 checks["referenced_mesh_missing_blocks_freeze"] = True
-            w("scene/assets/link0.stl", "scene mesh fixture")
+            w("third_party/mujoco_menagerie/franka_emika_panda/"
+              "assets/link0.stl", "solid fixture")
+            FREEZE_FILES = _freeze_inventory()
+            # A same-named file in the WRONG directory must not
+            # conceal the missing mesh (review #11): resolution
+            # is exact - the meshdir location or nothing.
+            (panda_assets / "link0.stl").unlink()
+            w("third_party/mujoco_menagerie/franka_emika_panda/"
+              "link0.stl", "shadow fixture")
+            FREEZE_FILES = _freeze_inventory()
+            try:
+                with contextlib.redirect_stdout(io.StringIO()):
+                    mode_freeze()
+                checks["shadow_file_does_not_conceal_missing_mesh"] = False
+            except SystemExit:
+                checks["shadow_file_does_not_conceal_missing_mesh"] = True
+            (troot / "third_party" / "mujoco_menagerie"
+             / "franka_emika_panda" / "link0.stl").unlink()
+            w("third_party/mujoco_menagerie/franka_emika_panda/"
+              "assets/link0.stl", "solid fixture")
             FREEZE_FILES = _freeze_inventory()
             # A missing required dependency prevents freezing.
             (troot / "scene" / "cell.xml").unlink()
@@ -1276,4 +1369,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 
