@@ -1,0 +1,13 @@
+{
+  "frozen_at": "2026-10-31T11:23:41-0400",
+  "candidate_head": "50c2249a45df4bdaaab78135d54e4e6879665f5c",
+  "files": {
+    "gate5_suite.json": "e2e7c5ea6837f85a75d5cc5dd42c33639101bd6e9f64134deec52872bfc003a7",
+    "gate5_probes.json": "7c198492d77ca7984bb4e66f80118626d5dc67d75c582370415fee5d5b31f69f",
+    "scenarios/example_scenarios.json": "412fd07b0a319331d6cbd0f3e66fe754df46155e93572494ee3f1ad0511bb883",
+    "src/simforge/guard.py": "233c6d498fd0d8974953d693a8ebedf22c076de3ddec79da2f5b2260e6173978",
+    "src/simforge/plan_schema.py": "d4b96da6b8d36cfb9a9f15b23d5eb0aa3d3f3230a21d47ba4b16536e05da82a0",
+    "src/simforge/evaluator.py": "7f1fab0f7a1c1c08e6aaa7a9cc6ef63cf86edf607b2976b59ee3bac89eb475f2",
+    "gate5_run.py": "80169fa77605fcd9312628e854318d2332da7c4d3ed0001aa1499d4677f7d659"
+  }
+}

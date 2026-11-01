@@ -1,0 +1,35 @@
+{
+  "run": "gate4-repair-causality-guarded",
+  "attempt": "F1",
+  "note": "Remediation evidence (Astra review #6). Executions through run_guarded; approval is a labeled offline fixture. Original causality file retained; Gate 4 verdict unchanged (NOT PASSED).",
+  "B1": {
+    "guarded": true,
+    "executor_calls": [
+      1,
+      1
+    ],
+    "statuses": [
+      "executed",
+      "executed"
+    ],
+    "max_final_xy_delta_m": 0.0,
+    "duration_delta_s": 0.0,
+    "passed": true
+  },
+  "B2": {
+    "guarded": true,
+    "executor_calls": [
+      1,
+      1
+    ],
+    "duration_delta_s": 6.249999999998609,
+    "passed": true
+  },
+  "B3": {
+    "guarded": true,
+    "status": "validation_failed",
+    "executor_calls": 0,
+    "passed": true
+  },
+  "passed": true
+}

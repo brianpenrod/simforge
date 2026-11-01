@@ -1,0 +1,15 @@
+{
+  "manifest_total": 11,
+  "records": 11,
+  "started": 11,
+  "completed": 11,
+  "matched": 11,
+  "suite_completion": 1.0,
+  "audit_completeness": 1.0,
+  "behavioral_pass": true,
+  "defects": [],
+  "passed": true,
+  "attempt": "A1",
+  "candidate_head": "8dacc16dcafe5f6cc1a82e461ffd962b125f379f",
+  "freeze_digest": "fe9ea6722fa6ce9895baa0f4e7e8c7be64fa3bcf773629c638c7327c07a49e6f"
+}

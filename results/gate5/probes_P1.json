@@ -1,0 +1,58 @@
+{
+  "attempt": "P1",
+  "all_passed": true,
+  "probes": [
+    {
+      "run_id": "P1:PROBE-APPROVAL-ERROR",
+      "attempt": "P1",
+      "case_id": "PROBE-APPROVAL-ERROR",
+      "kind": "approval_error",
+      "expected_status": "approval_error",
+      "guard_status": "approval_error",
+      "executor_calls": 0,
+      "passed": true,
+      "started_ts": "2026-11-01T15:59:48-0500",
+      "decision": "approval_error",
+      "outcome": "not_executed"
+    },
+    {
+      "run_id": "P1:PROBE-EXECUTION-ERROR",
+      "attempt": "P1",
+      "case_id": "PROBE-EXECUTION-ERROR",
+      "kind": "execution_error",
+      "expected_status": "execution_failed",
+      "guard_status": "execution_failed",
+      "executor_calls": 1,
+      "passed": true,
+      "started_ts": "2026-11-01T15:59:48-0500",
+      "decision": "approved",
+      "outcome": "execution_failed"
+    },
+    {
+      "run_id": "P1:PROBE-INVALIDATION",
+      "attempt": "P1",
+      "case_id": "PROBE-INVALIDATION",
+      "kind": "invalidation",
+      "expected_status": "approval_invalidated",
+      "guard_status": "approval_invalidated",
+      "executor_calls": 0,
+      "passed": true,
+      "started_ts": "2026-11-01T15:59:48-0500",
+      "decision": "approval_invalidated",
+      "outcome": "not_executed"
+    },
+    {
+      "run_id": "P1:PROBE-INTERRUPT",
+      "attempt": "P1",
+      "case_id": "PROBE-INTERRUPT",
+      "kind": "interrupt",
+      "expected_status": "approval_interrupted",
+      "guard_status": "approval_interrupted",
+      "executor_calls": 0,
+      "passed": true,
+      "started_ts": "2026-11-01T15:59:48-0500",
+      "decision": "approval_interrupted",
+      "outcome": "not_executed"
+    }
+  ]
+}
