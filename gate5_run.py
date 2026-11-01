@@ -68,7 +68,11 @@ Modes:
                    through it or a redirected alias invalidates the
                    freeze; an XML-referenced mesh that is missing
                    prevents freezing, and a same-named shadow file in
-                   the wrong directory does not conceal the gap.
+                   the wrong directory does not conceal the gap;
+                   removing only the loader-facing alias while the
+                   canonical assets remain intact also prevents
+                   freezing (references resolve in the main model's
+                   loading context, not the included file's).
 
 Sim imports are lazy so verify / verify-selftest / freeze run
 without the simulator stack.
@@ -246,18 +250,31 @@ def _check_freeze() -> dict:
 
 def _referenced_assets():
     """Assets the loader will open, per the inventoried XMLs
-    (reviews #10-#11). A directory scan cannot see a referenced
+    (reviews #10-#12). A directory scan cannot see a referenced
     mesh that is missing - the file simply never enters the
     inventory - so the references themselves are validated.
+
     Resolution is EXACT, the way MuJoCo resolves it - never a
     list of fallback directories (review #11: a same-named file
-    in the wrong directory must not conceal a missing mesh):
-      mesh     -> compiler meshdir, else assetdir, else the
-                  XML's own directory
-      texture  -> compiler texturedir, else assetdir, else the
-                  XML's own directory
-      include  -> the including XML's directory, always
-      other    -> compiler assetdir, else the XML's directory
+    in the wrong directory must not conceal a missing mesh) -
+    and it happens in the LOADING CONTEXT OF THE MAIN MODEL
+    (review #12): asset paths resolve against the main MJCF
+    file's directory with the model's effective compiler
+    settings, NOT against each included file's own directory.
+    For this repository the main model is scene/cell.xml, so a
+    Panda mesh resolves through scene/assets even though the
+    reference text lives in the Panda XML - an absent
+    scene/assets alias is a broken reference even when the
+    canonical third_party assets are intact. Effective compiler
+    settings come from the main file's <compiler> first, then
+    are inherited from included files for settings the main
+    file does not set. Per element type, against the main
+    directory: mesh -> effective meshdir, else assetdir;
+    texture -> effective texturedir, else assetdir; other ->
+    effective assetdir. Includes are structural: each resolves
+    against its including file's directory, always. An
+    inventoried XML included by another is not a main model;
+    an XML in no include closure is its own main model.
     Resolved paths are normalized before comparison - a
     parent-relative reference like the scene's real
     ../third_party/... include collapses to the same form the
@@ -267,46 +284,108 @@ def _referenced_assets():
     import posixpath
     import xml.etree.ElementTree as ET
     resolved, missing = set(), []
+    trees = {}
     for rel in FREEZE_FILES:
         if not rel.endswith(".xml"):
             continue
-        xpath = ROOT / rel
         try:
-            root_el = ET.parse(xpath).getroot()
+            trees[rel] = ET.parse(ROOT / rel).getroot()
         except Exception as exc:
             missing.append(f"{rel}: unparseable XML ({exc})")
-            continue
-        compiler = root_el.find("compiler")
 
-        def _setting(name, _c=compiler):
-            return _c.get(name) if _c is not None else None
+    def _norm(raw):
+        return posixpath.normpath(raw.relative_to(ROOT).as_posix())
 
-        xdir = xpath.parent
+    # Include graph; include references resolve against the
+    # including file's directory (structural, not asset rules).
+    edges, included = {}, set()
+    for rel, root_el in trees.items():
+        xdir = (ROOT / rel).parent
+        targets = []
         for el in root_el.iter():
+            if el.tag != "include":
+                continue
             ref = el.get("file")
             if not ref or ref.startswith("/") or "://" in ref:
                 continue
-            if el.tag == "mesh":
-                sub = _setting("meshdir") or _setting("assetdir")
-            elif el.tag == "texture":
-                sub = _setting("texturedir") or _setting("assetdir")
-            elif el.tag == "include":
-                sub = None
-            else:
-                sub = _setting("assetdir")
-            raw = (xdir / sub / ref) if sub else (xdir / ref)
+            raw = xdir / ref
             if not raw.is_file():
-                missing.append(f"{rel}: referenced file {ref!r} "
-                               f"not found at its resolved location")
+                missing.append(f"{rel}: included file {ref!r} "
+                               f"not found")
                 continue
             try:
-                rel_resolved = posixpath.normpath(
-                    raw.relative_to(ROOT).as_posix())
+                target = _norm(raw)
             except ValueError:
-                missing.append(f"{rel}: referenced file {ref!r} "
+                missing.append(f"{rel}: included file {ref!r} "
                                f"resolves outside the repository")
                 continue
-            resolved.add(rel_resolved)
+            resolved.add(target)
+            targets.append(target)
+            included.add(target)
+        edges[rel] = targets
+
+    def _closure(root_rel):
+        seen, order, stack = set(), [], [root_rel]
+        while stack:
+            cur = stack.pop()
+            if cur in seen:
+                continue
+            seen.add(cur)
+            order.append(cur)
+            stack.extend(edges.get(cur, []))
+        return order
+
+    def _effective_settings(order):
+        eff = {}
+        for key in ("meshdir", "texturedir", "assetdir"):
+            for rel in order:
+                comp = trees[rel].find("compiler") \
+                    if rel in trees else None
+                if comp is not None and comp.get(key):
+                    eff[key] = comp.get(key)
+                    break
+        return eff
+
+    pending = [rel for rel in trees if rel not in included]
+    done = set()
+    while pending:
+        root_rel = pending.pop(0)
+        if root_rel in done:
+            continue
+        order = _closure(root_rel)
+        done.update(order)
+        eff = _effective_settings(order)
+        root_dir = (ROOT / root_rel).parent
+        for rel in order:
+            if rel not in trees:
+                continue
+            for el in trees[rel].iter():
+                if el.tag == "include":
+                    continue
+                ref = el.get("file")
+                if not ref or ref.startswith("/") or "://" in ref:
+                    continue
+                if el.tag == "mesh":
+                    sub = eff.get("meshdir") or eff.get("assetdir")
+                elif el.tag == "texture":
+                    sub = eff.get("texturedir") or eff.get("assetdir")
+                else:
+                    sub = eff.get("assetdir")
+                raw = (root_dir / sub / ref) if sub else (root_dir / ref)
+                if not raw.is_file():
+                    missing.append(
+                        f"{rel}: referenced file {ref!r} not found "
+                        f"at its resolved location (loading "
+                        f"context of {root_rel})")
+                    continue
+                try:
+                    resolved.add(_norm(raw))
+                except ValueError:
+                    missing.append(
+                        f"{rel}: referenced file {ref!r} resolves "
+                        f"outside the repository")
+        pending.extend(rel for rel in trees
+                       if rel not in done and rel not in pending)
     return resolved, missing
 
 
@@ -463,13 +542,58 @@ def mode_freeze_selftest() -> None:
                            target_is_directory=True)
             else:
                 (assets_link / "link0.stl").write_text("solid fixture")
+            # Helpers for the loader-mesh controls: the mesh the
+            # loader actually opens lives at the loader-facing
+            # location (through scene/assets). In symlink mode
+            # that is the canonical target file; in directory
+            # mode it is the alias copy.
+            panda_assets = (troot / "third_party" / "mujoco_menagerie"
+                            / "franka_emika_panda" / "assets")
+
+            def _remove_loader_mesh():
+                if link_mode == "symlink":
+                    (panda_assets / "link0.stl").unlink()
+                else:
+                    (assets_link / "link0.stl").unlink()
+
+            def _restore_loader_mesh():
+                if link_mode == "symlink":
+                    w("third_party/mujoco_menagerie/"
+                      "franka_emika_panda/assets/link0.stl",
+                      "solid fixture")
+                else:
+                    (assets_link / "link0.stl").write_text(
+                        "solid fixture")
+
+            # Removing ONLY the loader-facing alias, with the
+            # canonical assets intact, prevents freezing
+            # (review #12): references resolve in the main
+            # model's loading context (scene/), so the canonical
+            # tree alone does not satisfy the loader.
+            if link_mode == "symlink":
+                _unlink_link(assets_link)
+            else:
+                (assets_link / "link0.stl").unlink()
+                assets_link.rmdir()
+            FREEZE_FILES = _freeze_inventory()
+            try:
+                with contextlib.redirect_stdout(io.StringIO()):
+                    mode_freeze()
+                checks["loader_alias_missing_blocks_freeze"] = False
+            except SystemExit:
+                checks["loader_alias_missing_blocks_freeze"] = True
+            if link_mode == "symlink":
+                os.symlink(assets_target, assets_link,
+                           target_is_directory=True)
+            else:
+                assets_link.mkdir(parents=True, exist_ok=True)
+                (assets_link / "link0.stl").write_text("solid fixture")
+            FREEZE_FILES = _freeze_inventory()
             # An XML-referenced mesh missing BEFORE freezing
             # blocks the freeze (review #10): the file drops out
             # of the directory scan entirely, so only the
             # reference validation can catch it.
-            panda_assets = (troot / "third_party" / "mujoco_menagerie"
-                            / "franka_emika_panda" / "assets")
-            (panda_assets / "link0.stl").unlink()
+            _remove_loader_mesh()
             FREEZE_FILES = _freeze_inventory()
             try:
                 with contextlib.redirect_stdout(io.StringIO()):
@@ -477,15 +601,15 @@ def mode_freeze_selftest() -> None:
                 checks["referenced_mesh_missing_blocks_freeze"] = False
             except SystemExit:
                 checks["referenced_mesh_missing_blocks_freeze"] = True
-            w("third_party/mujoco_menagerie/franka_emika_panda/"
-              "assets/link0.stl", "solid fixture")
+            _restore_loader_mesh()
             FREEZE_FILES = _freeze_inventory()
             # A same-named file in the WRONG directory must not
             # conceal the missing mesh (review #11): resolution
-            # is exact - the meshdir location or nothing.
-            (panda_assets / "link0.stl").unlink()
-            w("third_party/mujoco_menagerie/franka_emika_panda/"
-              "link0.stl", "shadow fixture")
+            # is exact - the meshdir location or nothing. The
+            # shadow sits in the main model's own directory,
+            # beside the scene XML.
+            _remove_loader_mesh()
+            w("scene/link0.stl", "shadow fixture")
             FREEZE_FILES = _freeze_inventory()
             try:
                 with contextlib.redirect_stdout(io.StringIO()):
@@ -493,10 +617,8 @@ def mode_freeze_selftest() -> None:
                 checks["shadow_file_does_not_conceal_missing_mesh"] = False
             except SystemExit:
                 checks["shadow_file_does_not_conceal_missing_mesh"] = True
-            (troot / "third_party" / "mujoco_menagerie"
-             / "franka_emika_panda" / "link0.stl").unlink()
-            w("third_party/mujoco_menagerie/franka_emika_panda/"
-              "assets/link0.stl", "solid fixture")
+            (troot / "scene" / "link0.stl").unlink()
+            _restore_loader_mesh()
             FREEZE_FILES = _freeze_inventory()
             # A missing required dependency prevents freezing.
             (troot / "scene" / "cell.xml").unlink()
@@ -1020,6 +1142,7 @@ def mode_verify_selftest() -> None:
     (RESULTS / "verify_selftest.json").write_text(json.dumps(payload, indent=2))
     print(json.dumps(checks, indent=2))
     print("VERIFY SELFTEST:", "PASS" if payload["all_passed"] else "FAIL")
+
 # ------------------------------------------------------------- suite core
 def _sim_imports():
     from simforge import evaluator, grasp
