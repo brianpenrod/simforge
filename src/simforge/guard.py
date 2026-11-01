@@ -39,6 +39,24 @@ Oct 30, review #6 (Gate 5 remediation):
     executor untouched on the approval path. The CALLER decides
     what an interrupted status means for its own control flow;
     the guard never silently continues a suite past an interrupt.
+
+Oct 31, review #7 (Gate 5 remediation) - guard v3.1:
+  - Plan snapshot: immediately after validation the guard snapshots
+    the validated plan (plan_snapshot); every later audit write
+    uses the snapshot, never plan.__dict__, so a callback that
+    damages the plan object cannot break logging.
+  - The post-approval plan-fingerprint re-check is itself
+    protected: a damaged plan (e.g. a field deleted by the approval
+    callback) ends as an audited approval_invalidated instead of
+    an uncaught exception after the "approved" event, and a
+    non-Exception interruption there ends as approval_interrupted.
+    Execution never starts on either path.
+  - Interruption identity is preserved in the early phases: a
+    KeyboardInterrupt/SystemExit during initial validation returns
+    validation_interrupted (not validation_failed), and during the
+    fresh-scene re-check returns approval_interrupted (not
+    approval_invalidated), so callers' halt logic sees the
+    interruption instead of an ordinary failure.
 """
 from __future__ import annotations
 
@@ -135,12 +153,19 @@ def run_guarded(raw_plan, scene_state, executor, approve, audit: AuditLog,
         plan = validate_syntax(raw_plan)
         validate_semantics(plan, scene_state)
     except BaseException as exc:
-        _write("validation_failed", error=str(exc),
-               error_type=type(exc).__name__)
-        return GuardResult(status="validation_failed", error=str(exc))
+        interrupted = not isinstance(exc, Exception)
+        status = ("validation_interrupted" if interrupted
+                  else "validation_failed")
+        _write(status, error=str(exc), error_type=type(exc).__name__)
+        return GuardResult(status=status, error=str(exc))
+    # Snapshot the validated plan NOW (review #7): the approval
+    # callback receives the mutable Plan and can damage it (a
+    # deleted field was reproduced). Every later audit write uses
+    # this snapshot, so logging can never be broken by the damage.
+    plan_snapshot = dict(plan.__dict__)
     plan_fp = _plan_fingerprint(plan)
     scene_fp = _scene_fingerprint(scene_state)
-    _write("validated", plan=plan.__dict__,
+    _write("validated", plan=plan_snapshot,
            plan_fingerprint=plan_fp, scene_fingerprint=scene_fp)
 
     try:
@@ -148,22 +173,36 @@ def run_guarded(raw_plan, scene_state, executor, approve, audit: AuditLog,
     except BaseException as exc:
         interrupted = not isinstance(exc, Exception)
         _write("approval_interrupted" if interrupted else "approval_error",
-               plan=plan.__dict__, error=str(exc),
+               plan=plan_snapshot, error=str(exc),
                error_type=type(exc).__name__)
         return GuardResult(
             status="approval_interrupted" if interrupted else "approval_error",
             plan=plan, error=str(exc))
     if not approved:
-        _write("rejected", plan=plan.__dict__,
+        _write("rejected", plan=plan_snapshot,
                plan_fingerprint=plan_fp)
         return GuardResult(status="rejected", plan=plan)
-    _write("approved", plan=plan.__dict__, plan_fingerprint=plan_fp)
+    _write("approved", plan=plan_snapshot, plan_fingerprint=plan_fp)
 
     # Binding re-check: the approval covers THIS plan in THIS scene.
-    if _plan_fingerprint(plan) != plan_fp:
+    # The fingerprint derivation itself is protected (review #7):
+    # a plan damaged by the approval callback raises here, and that
+    # must end as an audited terminal - never as an uncaught
+    # exception after the "approved" event.
+    try:
+        plan_unchanged = _plan_fingerprint(plan) == plan_fp
+    except BaseException as exc:
+        interrupted = not isinstance(exc, Exception)
+        status = ("approval_interrupted" if interrupted
+                  else "approval_invalidated")
+        _write(status, reason="plan damaged or changed after approval",
+               plan=plan_snapshot, error=str(exc),
+               error_type=type(exc).__name__)
+        return GuardResult(status=status, plan=plan, error=str(exc))
+    if not plan_unchanged:
         _write("approval_invalidated",
                reason="plan changed after approval",
-               plan=plan.__dict__)
+               plan=plan_snapshot)
         return GuardResult(status="approval_invalidated", plan=plan,
                            error="plan changed after approval")
     if scene_provider is not None:
@@ -172,10 +211,13 @@ def run_guarded(raw_plan, scene_state, executor, approve, audit: AuditLog,
             validate_semantics(plan, fresh_scene)
             fresh_fp = _scene_fingerprint(fresh_scene)
         except BaseException as exc:
-            _write("approval_invalidated",
+            interrupted = not isinstance(exc, Exception)
+            status = ("approval_interrupted" if interrupted
+                      else "approval_invalidated")
+            _write(status,
                    reason="fresh scene state failed validation",
                    error=str(exc), error_type=type(exc).__name__)
-            return GuardResult(status="approval_invalidated", plan=plan,
+            return GuardResult(status=status, plan=plan,
                                error=str(exc))
         if fresh_fp != scene_fp:
             _write("approval_invalidated",
@@ -190,12 +232,12 @@ def run_guarded(raw_plan, scene_state, executor, approve, audit: AuditLog,
     except BaseException as exc:
         interrupted = not isinstance(exc, Exception)
         _write("execution_interrupted" if interrupted else "execution_failed",
-               plan=plan.__dict__, error=str(exc),
+               plan=plan_snapshot, error=str(exc),
                error_type=type(exc).__name__)
         return GuardResult(
             status="execution_interrupted" if interrupted else "execution_failed",
             plan=plan, error=str(exc))
-    _write("executed", plan=plan.__dict__, outcome=str(outcome))
+    _write("executed", plan=plan_snapshot, outcome=str(outcome))
     return GuardResult(status="executed", plan=plan, outcome=outcome)
 
 

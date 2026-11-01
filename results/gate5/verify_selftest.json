@@ -5,7 +5,16 @@
     "duplicated_terminal_caught": true,
     "orphan_caught": true,
     "malformed_caught": true,
-    "case_removal_caught": true
+    "case_removal_caught": true,
+    "terminal_only_audit_caught": true,
+    "missing_run_id_caught": true,
+    "prereg_gap_completeness": true,
+    "foreign_attempt_scoped": true,
+    "behavioral_mismatch_caught": true,
+    "record_without_preregistration_caught": true,
+    "executed_decision_flipped_caught": true,
+    "executed_plan_substituted_caught": true,
+    "nonterminal_orphan_caught": true
   },
   "all_passed": true,
   "reports": {
@@ -17,6 +26,7 @@
       "matched": 3,
       "suite_completion": 1.0,
       "audit_completeness": 1.0,
+      "behavioral_pass": true,
       "defects": [],
       "passed": true
     },
@@ -28,6 +38,7 @@
       "matched": 2,
       "suite_completion": 1.0,
       "audit_completeness": 0.6666666666666666,
+      "behavioral_pass": true,
       "defects": [],
       "passed": false
     },
@@ -39,6 +50,7 @@
       "matched": 2,
       "suite_completion": 1.0,
       "audit_completeness": 0.6666666666666666,
+      "behavioral_pass": true,
       "defects": [
         {
           "kind": "duplicate_terminal",
@@ -55,6 +67,7 @@
       "matched": 3,
       "suite_completion": 1.0,
       "audit_completeness": 1.0,
+      "behavioral_pass": true,
       "defects": [
         {
           "kind": "orphan_audit_run",
@@ -71,6 +84,7 @@
       "matched": 3,
       "suite_completion": 1.0,
       "audit_completeness": 1.0,
+      "behavioral_pass": true,
       "defects": [
         {
           "kind": "malformed_audit_line",
@@ -87,10 +101,174 @@
       "matched": 2,
       "suite_completion": 0.6666666666666666,
       "audit_completeness": 1.0,
+      "behavioral_pass": true,
       "defects": [
         {
           "kind": "missing_run_record",
           "detail": "C2"
+        }
+      ],
+      "passed": false
+    },
+    "terminal_only_audit": {
+      "manifest_total": 3,
+      "records": 3,
+      "started": 3,
+      "completed": 3,
+      "matched": 0,
+      "suite_completion": 1.0,
+      "audit_completeness": 0.0,
+      "behavioral_pass": false,
+      "defects": [
+        {
+          "kind": "missing_audit_fields",
+          "detail": "T:C1: event 'executed' has no ts"
+        },
+        {
+          "kind": "missing_audit_fields",
+          "detail": "T:C2: event 'validation_failed' has no ts"
+        },
+        {
+          "kind": "missing_audit_fields",
+          "detail": "T:C3: event 'rejected' has no ts"
+        },
+        {
+          "kind": "missing_audit_fields",
+          "detail": "T:C1: executed run lacks a plan on one of validated/approved/executed"
+        },
+        {
+          "kind": "missing_audit_fields",
+          "detail": "T:C1: executed terminal carries no plan"
+        },
+        {
+          "kind": "decision_mismatch",
+          "detail": "T:C1: executed with no approved event"
+        }
+      ],
+      "passed": false
+    },
+    "missing_run_id": {
+      "manifest_total": 3,
+      "records": 3,
+      "started": 3,
+      "completed": 3,
+      "matched": 3,
+      "suite_completion": 1.0,
+      "audit_completeness": 1.0,
+      "behavioral_pass": true,
+      "defects": [
+        {
+          "kind": "missing_run_id",
+          "detail": "audit event 'approved' carries no run_id"
+        }
+      ],
+      "passed": false
+    },
+    "prereg_gap": {
+      "manifest_total": 3,
+      "records": 3,
+      "started": 11,
+      "completed": 3,
+      "matched": 3,
+      "suite_completion": 1.0,
+      "audit_completeness": 0.2727272727272727,
+      "behavioral_pass": true,
+      "defects": [],
+      "passed": false
+    },
+    "foreign_attempt_events": {
+      "manifest_total": 3,
+      "records": 3,
+      "started": 3,
+      "completed": 3,
+      "matched": 3,
+      "suite_completion": 1.0,
+      "audit_completeness": 1.0,
+      "behavioral_pass": true,
+      "defects": [],
+      "passed": true
+    },
+    "behavioral_mismatch": {
+      "manifest_total": 3,
+      "records": 3,
+      "started": 3,
+      "completed": 3,
+      "matched": 3,
+      "suite_completion": 1.0,
+      "audit_completeness": 1.0,
+      "behavioral_pass": false,
+      "defects": [
+        {
+          "kind": "behavioral_mismatch",
+          "detail": "T:C1: expected executed, recorded rejected with 0 executor call(s)"
+        }
+      ],
+      "passed": false
+    },
+    "record_without_preregistration": {
+      "manifest_total": 3,
+      "records": 3,
+      "started": 3,
+      "completed": 3,
+      "matched": 2,
+      "suite_completion": 1.0,
+      "audit_completeness": 0.6666666666666666,
+      "behavioral_pass": true,
+      "defects": [
+        {
+          "kind": "record_without_preregistration",
+          "detail": "T:C1"
+        }
+      ],
+      "passed": false
+    },
+    "executed_decision_flipped": {
+      "manifest_total": 3,
+      "records": 3,
+      "started": 3,
+      "completed": 3,
+      "matched": 2,
+      "suite_completion": 1.0,
+      "audit_completeness": 0.6666666666666666,
+      "behavioral_pass": true,
+      "defects": [
+        {
+          "kind": "outcome_mismatch",
+          "detail": "T:C1: executed record carries decision 'rejected' / outcome 'not_executed'"
+        }
+      ],
+      "passed": false
+    },
+    "executed_plan_substituted": {
+      "manifest_total": 3,
+      "records": 3,
+      "started": 3,
+      "completed": 3,
+      "matched": 2,
+      "suite_completion": 1.0,
+      "audit_completeness": 0.6666666666666666,
+      "behavioral_pass": true,
+      "defects": [
+        {
+          "kind": "plan_mismatch",
+          "detail": "T:C1: validated/approved/executed plans differ"
+        }
+      ],
+      "passed": false
+    },
+    "nonterminal_orphan": {
+      "manifest_total": 3,
+      "records": 3,
+      "started": 3,
+      "completed": 3,
+      "matched": 3,
+      "suite_completion": 1.0,
+      "audit_completeness": 1.0,
+      "behavioral_pass": true,
+      "defects": [
+        {
+          "kind": "orphan_audit_run",
+          "detail": "T:ORPHAN"
         }
       ],
       "passed": false

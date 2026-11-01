@@ -19,9 +19,14 @@ produce the corrected-path evidence the review required:
                        get explicit terminal audit records from this
                        runner, so every mode ends audited.
 
-Outputs: results/gate4/causality_guarded.json,
-         results/gate4/sample_d_orchestration.json,
-         results/gate4/audit_repairs.jsonl (this file's own audit).
+Outputs (attempt-scoped, review #7 - distinct attempts never
+overwrite each other, so rehearsal evidence stays attributable;
+--attempt defaults to "dev"):
+         results/gate4/causality_guarded_<attempt>.json,
+         results/gate4/sample_d_orchestration_<attempt>.json,
+         results/gate4/audit_repairs_<attempt>.jsonl (own audit),
+         results/gate4/stub_requests_<attempt>_<mode>.log.
+         Run IDs are prefixed repair-<attempt>: (e.g. repair-F1:B1a).
 """
 import argparse
 import json
@@ -43,8 +48,11 @@ from simforge.model_adapter import ModelAdapter, ModelConfig  # noqa: E402
 from simforge.plan_schema import parse_plan  # noqa: E402
 
 RESULTS = ROOT / "results" / "gate4"
-REPAIR_AUDIT = RESULTS / "audit_repairs.jsonl"
 CENTER = [0.45, 0.0]
+
+
+def _repair_audit(attempt: str) -> AuditLog:
+    return AuditLog(RESULTS / f"audit_repairs_{attempt}.jsonl")
 
 
 def _guarded_execution(audit, run_id, part_xy, seed, plan_dict,
@@ -69,13 +77,14 @@ def _guarded_execution(audit, run_id, part_xy, seed, plan_dict,
     return result, calls["n"]
 
 
-def mode_causality_guarded() -> None:
-    audit = AuditLog(REPAIR_AUDIT)
+def mode_causality_guarded(attempt: str) -> None:
+    audit = _repair_audit(attempt)
+    rid = f"repair-{attempt}"
     base = {"part_id": "part", "target_zone": "target_zone",
             "approach_height_m": 0.15, "speed_scale": 0.5}
     # B1: determinism, both runs guarded.
-    r1, c1 = _guarded_execution(audit, "repair:B1a", CENTER, 101, dict(base))
-    r2, c2 = _guarded_execution(audit, "repair:B1b", CENTER, 101, dict(base))
+    r1, c1 = _guarded_execution(audit, f"{rid}:B1a", CENTER, 101, dict(base))
+    r2, c2 = _guarded_execution(audit, f"{rid}:B1b", CENTER, 101, dict(base))
     b1_ok = (c1 == c2 == 1 and r1.status == r2.status == "executed")
     detail = {}
     if b1_ok:
@@ -87,8 +96,8 @@ def mode_causality_guarded() -> None:
     # B2: isolated speed causality, both runs guarded.
     slow = dict(base, speed_scale=0.3)
     fast = dict(base, speed_scale=0.9)
-    rs, cs = _guarded_execution(audit, "repair:B2-slow", CENTER, 101, slow)
-    rf, cf = _guarded_execution(audit, "repair:B2-fast", CENTER, 101, fast)
+    rs, cs = _guarded_execution(audit, f"{rid}:B2-slow", CENTER, 101, slow)
+    rf, cf = _guarded_execution(audit, f"{rid}:B2-fast", CENTER, 101, fast)
     b2_ok = (cs == cf == 1 and rs.status == rf.status == "executed"
              and rs.outcome["success"] and rf.outcome["success"])
     delta = None
@@ -98,10 +107,11 @@ def mode_causality_guarded() -> None:
     # B3: invalid plan, guard must stop it (as before, now recorded
     # alongside the guarded B1/B2 in one inventory).
     bad = dict(base, approach_height_m=0.01)
-    r3, c3 = _guarded_execution(audit, "repair:B3", CENTER, 101, bad)
+    r3, c3 = _guarded_execution(audit, f"{rid}:B3", CENTER, 101, bad)
     b3_ok = r3.status == "validation_failed" and c3 == 0
     payload = {
         "run": "gate4-repair-causality-guarded",
+        "attempt": attempt,
         "note": "Remediation evidence (Astra review #6). Executions "
                 "through run_guarded; approval is a labeled offline "
                 "fixture. Original causality file retained; Gate 4 "
@@ -114,7 +124,7 @@ def mode_causality_guarded() -> None:
         "B3": {"guarded": True, "status": r3.status,
                "executor_calls": c3, "passed": bool(b3_ok)},
         "passed": bool(b1_ok and b2_ok and b3_ok)}
-    out = RESULTS / "causality_guarded.json"
+    out = RESULTS / f"causality_guarded_{attempt}.json"
     out.write_text(json.dumps(payload, indent=2))
     print(json.dumps(payload, indent=2))
     print("GUARDED CAUSALITY:", "PASS" if payload["passed"] else "FAIL")
@@ -145,15 +155,15 @@ def _run_stub(mode: str, port: int, log_path: Path):
     raise RuntimeError(f"stub did not start in mode {mode}")
 
 
-def mode_stub_orchestration() -> None:
-    audit = AuditLog(REPAIR_AUDIT)
+def mode_stub_orchestration(attempt: str) -> None:
+    audit = _repair_audit(attempt)
     scene = evaluator._reject_scene_state(CENTER)
     modes = ["valid", "malformed", "empty", "truncated", "slow", "error500"]
     rows = []
     for mode in modes:
-        run_id = f"repair:D-{mode}"
+        run_id = f"repair-{attempt}:D-{mode}"
         port = _free_port()
-        log_path = RESULTS / f"stub_requests_{mode}.log"
+        log_path = RESULTS / f"stub_requests_{attempt}_{mode}.log"
         if log_path.exists():
             log_path.unlink()
         proc = _run_stub(mode, port, log_path)
@@ -213,6 +223,7 @@ def mode_stub_orchestration() -> None:
               f"requests={requests} executor_calls={calls['n']} -> "
               f"{'PASS' if rows[-1]['passed'] else 'FAIL'}")
     payload = {"run": "gate4-repair-stub-orchestration",
+               "attempt": attempt,
                "note": "Remediation evidence (Astra review #6): Sample D "
                        "modes driven through adapter + parser + guard "
                        "with a counting executor. Original Sample D "
@@ -220,7 +231,7 @@ def mode_stub_orchestration() -> None:
                        "(NOT PASSED). Test timeout 3 s (labeled).",
                "cases": rows,
                "passed": all(r["passed"] for r in rows)}
-    (RESULTS / "sample_d_orchestration.json").write_text(
+    (RESULTS / f"sample_d_orchestration_{attempt}.json").write_text(
         json.dumps(payload, indent=2))
     print("STUB ORCHESTRATION:", "PASS" if payload["passed"] else "FAIL")
 
@@ -229,12 +240,16 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Gate 4 repair evidence")
     parser.add_argument("--mode", required=True,
                         choices=["causality-guarded", "stub-orchestration"])
+    parser.add_argument("--attempt", default="dev",
+                        help="evidence attempt id; outputs and run IDs "
+                             "are scoped to it (default: dev)")
     args = parser.parse_args()
     if args.mode == "causality-guarded":
-        mode_causality_guarded()
+        mode_causality_guarded(args.attempt)
     else:
-        mode_stub_orchestration()
+        mode_stub_orchestration(args.attempt)
 
 
 if __name__ == "__main__":
     main()
+

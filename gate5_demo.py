@@ -20,7 +20,11 @@ the execution boundary for an untouched run:
 
 Demo runs refuse to start unless viewer_check.json records a pass
 against the CURRENT candidate hashes. If the check fails, the
-fallback is terminal capture plus clearly labeled replay.
+fallback is terminal capture plus clearly labeled replay; the
+`demo-headless` mode is that fallback's entry point - the same
+filed fixtures, approval display, guard, scoring, audit and
+records, executed headless with no viewer-check gate, with the
+capture method labeled in every record.
 Determinism claims are limited to final positions and duration -
 no bit-for-bit trajectory claims anywhere.
 """
@@ -135,15 +139,30 @@ def mode_viewer_check() -> None:
                                    "viewer-check:viewer",
                                    lambda plan: True, use_viewer=True)
     # xfrc write-back evidence: one dedicated viewer run of the same
-    # fixture, measuring the applied-force array afterwards.
+    # fixture, measuring the applied-force array afterwards. The run
+    # goes through the guard as a labeled OFFLINE diagnostic with
+    # programmatic approval (review #7) - it is not a demo cycle
+    # and not human approval, and no execution bypasses the guard.
     model, data, ids, rest_z, zone = _build(evaluator, case)
-    from simforge.plan_schema import validate_syntax
-    plan = validate_syntax(case["plan"])
-    _v, xfrc_max = _execute_with_viewer(
-        imports[0], imports[2], imports[5], model, data, ids,
-        rest_z, zone, plan, use_viewer=True)
+    scene_state = evaluator._live_scene_state(model, data, ids)
+    diag_xfrc = {"max": 0.0}
+
+    def diag_executor(plan, _x=diag_xfrc):
+        verdict, xf = _execute_with_viewer(
+            imports[0], imports[2], imports[5], model, data, ids,
+            rest_z, zone, plan, use_viewer=True)
+        _x["max"] = xf
+        return verdict
+
+    diag = imports[4](case["plan"], scene_state, diag_executor,
+                      lambda plan: True, audit,
+                      scene_provider=lambda: evaluator._live_scene_state(
+                          model, data, ids),
+                      run_id="viewer-check:xfrc-diagnostic")
+    xfrc_max = diag_xfrc["max"]
+    _v = diag.outcome if isinstance(diag.outcome, dict) else {}
     same_verdict = (headless.outcome["success"] == viewer_run.outcome["success"]
-                    == _v["success"])
+                    == _v.get("success"))
     dpos = max(abs(a - b) for a, b in zip(headless.outcome["final_part_pos"],
                                          viewer_run.outcome["final_part_pos"]))
     ddur = abs(headless.outcome["sim_duration_s"]
@@ -153,8 +172,12 @@ def mode_viewer_check() -> None:
     payload = {"check": "viewer-boundary-equality",
                "fixture": case["id"], "passed": bool(passed),
                "headless": headless.outcome, "viewer": viewer_run.outcome,
-               "max_final_xy_delta_m": dpos, "duration_delta_s": ddur,
+               "max_final_pos_delta_m": dpos, "duration_delta_s": ddur,
                "xfrc_applied_max_abs_after_viewer_run": xfrc_max,
+               "xfrc_diagnostic_note": "xfrc measured on the guarded "
+               "run viewer-check:xfrc-diagnostic - an offline "
+               "diagnostic with programmatic approval, not a demo "
+               "cycle and not human approval",
                "candidate_hashes": _candidate_hashes(),
                "ts": time.strftime("%Y-%m-%dT%H:%M:%S%z")}
     RESULTS.mkdir(parents=True, exist_ok=True)
@@ -185,17 +208,11 @@ def _display(run_id, case, plan_dict, scene_state):
     return input("Approve execution? [y/N] ").strip().lower() == "y"
 
 
-def mode_demo(attempt: str) -> None:
-    check_path = RESULTS / "viewer_check.json"
-    if not check_path.exists():
-        raise SystemExit("REFUSED: run --mode viewer-check first")
-    check = json.loads(check_path.read_text())
-    if not check.get("passed"):
-        raise SystemExit("REFUSED: viewer check did not pass - use the "
-                         "terminal-capture fallback instead")
-    if check.get("candidate_hashes") != _candidate_hashes():
-        raise SystemExit("REFUSED: candidate changed since the viewer "
-                         "check - re-run viewer-check")
+def _demo_loop(attempt: str, use_viewer: bool, capture: str) -> None:
+    """The filed DEMO fixtures, one guarded run each. Shared by the
+    viewer mode and the headless fallback - only the capture path
+    differs. An interrupted status HALTS the loop (review #7): the
+    segment stops, no completion line is printed."""
     imports = _imports()
     _mujoco, evaluator, _g, AuditLog, _rg, _ea = imports
     manifest = json.loads(SUITE_MANIFEST.read_text())
@@ -216,7 +233,7 @@ def mode_demo(attempt: str) -> None:
             _c["n"] += 1
             verdict, _xf = _execute_with_viewer(
                 mujoco, grasp, evaluate_attempt, model, data, ids,
-                rest_z, zone, plan, use_viewer=True)
+                rest_z, zone, plan, use_viewer=use_viewer)
             return verdict
 
         def approve(plan, _case=case, _run_id=run_id, _ss=scene_state):
@@ -230,6 +247,7 @@ def mode_demo(attempt: str) -> None:
         calls = calls["n"]
         rec = {"run_id": run_id, "case_id": case["id"],
                "kind": case.get("kind"), "label": case.get("label"),
+               "capture": capture,
                "guard_status": result.status, "executor_calls": calls,
                "physics": result.outcome
                if result.status == "executed" else None,
@@ -238,6 +256,11 @@ def mode_demo(attempt: str) -> None:
             fh.write(json.dumps(rec) + "\n")
         print(f"{case['id']}: {result.status} "
               f"(executor_calls={calls})")
+        if result.status in ("approval_interrupted",
+                             "execution_interrupted",
+                             "validation_interrupted"):
+            print(f"DEMO RUNS HALTED: {result.status} at {case['id']}")
+            return False
         if result.status == "rejected":
             reason = input("Rejection reason (optional): ").strip()
             if reason:
@@ -247,18 +270,46 @@ def mode_demo(attempt: str) -> None:
                          "reason": reason}) + "\n")
     print(f"DEMO RUNS COMPLETE ({attempt}). Records: {records_path.name}, "
           f"audit: audit_demo.jsonl")
+    return True
+
+
+def mode_demo(attempt: str) -> None:
+    check_path = RESULTS / "viewer_check.json"
+    if not check_path.exists():
+        raise SystemExit("REFUSED: run --mode viewer-check first")
+    check = json.loads(check_path.read_text())
+    if not check.get("passed"):
+        raise SystemExit("REFUSED: viewer check did not pass - use the "
+                         "terminal-capture fallback (demo-headless) instead")
+    if check.get("candidate_hashes") != _candidate_hashes():
+        raise SystemExit("REFUSED: candidate changed since the viewer "
+                         "check - re-run viewer-check")
+    if not _demo_loop(attempt, use_viewer=True, capture="viewer"):
+        sys.exit(2)  # halted on an interruption (review #8 cleanup)
+
+
+def mode_demo_headless(attempt: str) -> None:
+    """Locked fallback (review #7): the filed demo fixtures run
+    headless - human decisions, run IDs, scoring, audit, interrupt
+    halt - with NO viewer-check gate. Footage is terminal capture
+    plus clearly labeled replay of the logged runs."""
+    if not _demo_loop(attempt, use_viewer=False,
+                      capture="terminal+headless (locked fallback)"):
+        sys.exit(2)  # halted on an interruption (review #8 cleanup)
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Gate 5 demo + viewer check")
     parser.add_argument("--mode", required=True,
-                        choices=["viewer-check", "demo"])
+                        choices=["viewer-check", "demo", "demo-headless"])
     parser.add_argument("--attempt", default="D1")
     args = parser.parse_args()
     if args.mode == "viewer-check":
         mode_viewer_check()
-    else:
+    elif args.mode == "demo":
         mode_demo(args.attempt)
+    else:
+        mode_demo_headless(args.attempt)
 
 
 if __name__ == "__main__":
