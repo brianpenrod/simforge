@@ -1,0 +1,21 @@
+{
+  "inventory_covers_scene": true,
+  "inventory_covers_panda": true,
+  "inventory_covers_gate4": true,
+  "inventory_covers_loader_assets": true,
+  "parent_relative_include_resolves": true,
+  "intact_freeze_accepted": true,
+  "scene_mutation_rejected": true,
+  "panda_xml_mutation_rejected": true,
+  "panda_asset_mutation_rejected": true,
+  "gate4_run_mutation_rejected": true,
+  "gate4_stub_mutation_rejected": true,
+  "loader_asset_mutation_rejected": true,
+  "added_file_rejected": true,
+  "alias_redirect_rejected": true,
+  "loader_alias_missing_blocks_freeze": true,
+  "referenced_mesh_missing_blocks_freeze": true,
+  "shadow_file_does_not_conceal_missing_mesh": true,
+  "missing_dependency_blocks_freeze": true
+}
+FREEZE SELFTEST: PASS

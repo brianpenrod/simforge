@@ -1,0 +1,23 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.15, pytest-9.1.1, pluggy-1.7.0
+rootdir: C:\dev\simforge
+configfile: pytest.ini
+testpaths: tests
+plugins: anyio-4.15.1, hypothesis-6.170.13
+collected 67 items
+
+tests\test_adapter.py ....                                               [  5%]
+tests\test_admission.py ...............                                  [ 28%]
+tests\test_evaluator.py ....                                             [ 34%]
+tests\test_gate1_regression.py .                                         [ 35%]
+tests\test_guard.py ....                                                 [ 41%]
+tests\test_guard_v3.py ....                                              [ 47%]
+tests\test_guard_v31.py ....                                             [ 53%]
+tests\test_negative_controls.py ..                                       [ 56%]
+tests\test_plan_validation.py ............                               [ 74%]
+tests\test_properties.py ....                                            [ 80%]
+tests\test_scorer.py ........                                            [ 92%]
+tests\test_scorer_release.py ..                                          [ 95%]
+tests\test_step_guard.py ...                                             [100%]
+
+============================= 67 passed in 4.66s ==============================
